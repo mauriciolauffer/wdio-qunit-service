@@ -1,0 +1,17 @@
+{
+	"name": "wdio-cjs",
+	"version": "0.0.1",
+	"description": "wdio-cjs",
+	"private": true,
+	"type": "commonjs",
+	"scripts": {
+		"test": "wdio run wdio.conf.js"
+	},
+	"devDependencies": {
+		"@wdio/cli": "^8",
+		"@wdio/local-runner": "^8",
+		"@wdio/mocha-framework": "^8",
+		"@wdio/spec-reporter": "^8",
+		"wdio-qunit-service": "*"
+	}
+}
