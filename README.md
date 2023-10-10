@@ -1,1 +1,1 @@
-# wdi5-qunit
+# wdio-qunit-service

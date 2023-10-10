@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "module": "ES2022",
+    "target": "ES2022",
+    "lib": [
+      "ES2022",
+      "DOM"
+    ],
+    "strict": true,
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "resolveJsonModule": true,
+    "outDir": "dist",
+    "sourceMap": true,
+    "declaration": true,
+    "skipLibCheck": true,
+    "types": [
+      "node",
+      "@wdio/types",
+      "@wdio/globals/types",
+      "@wdio/mocha-framework",
+      "@wdio/devtools-service",
+      "qunit"
+    ],
+  },
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules",
+    "coverage"
+  ]
+}
