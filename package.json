@@ -1,0 +1,65 @@
+{
+  "name": "wdio-qunit-service",
+  "version": "0.0.0",
+  "description": "WebdriverIO service for running QUnit browser-based tests and dinamically converting them to wdio test suites.",
+  "author": "Mauricio Lauffer",
+  "license": "MIT",
+  "homepage": "https://github.com/mauriciolauffer/wdio-qunit-service#readme",
+  "type": "module",
+  "main": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
+  "exports": {
+    "import": "./dist/esm/index.js",
+    "require": "./dist/cjs/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "ui5",
+    "openui5",
+    "sapui5",
+    "wdi5",
+    "wdio",
+    "wdio-plugin",
+    "wdio-service",
+    "qunit"
+  ],
+  "workspaces": [
+    ".",
+    "examples/*"
+  ],
+  "scripts": {
+    "build": "npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc --p tsconfig.esm.json",
+    "build:cjs": "tsc --p tsconfig.cjs.json",
+    "lint": "eslint src examples --cache",
+    "lint:ci": "eslint src examples -f @microsoft/eslint-formatter-sarif -o eslint.sarif"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.4",
+    "@types/qunit": "^2.19.6",
+    "@typescript-eslint/eslint-plugin": "^6.7.5",
+    "@typescript-eslint/parser": "^6.7.5",
+    "@wdio/types": "^8.16.12",
+    "eslint": "^8.51.0",
+    "eslint-config-mlauffer-nodejs": "^1.4.4",
+    "eslint-plugin-wdio": "^8.8.7",
+    "ts-node": "^10.9.1"
+  },
+  "peerDependencies": {
+    "@wdio/cli": ">=8",
+    "@wdio/local-runner": ">=8",
+    "@wdio/logger": ">=8",
+    "@wdio/mocha-framework": ">=8",
+    "typescript": ">=5",
+    "webdriverio": ">=8"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mauriciolauffer/wdio-qunit-service.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mauriciolauffer/wdio-qunit-service/issues"
+  }
+}

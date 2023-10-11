@@ -20,7 +20,9 @@ jobs:
         cache: npm
     - run: npm ci --ignore-scripts
     - run: npm run build
-    - run: npm run test
+    - run: npm test -w wdio-cjs
+    - run: npm test -w wdio-esm
+    - run: npm test -w wdio-features
     - run: npm run lint:ci
     - uses: github/codeql-action/upload-sarif@v2
       with:
