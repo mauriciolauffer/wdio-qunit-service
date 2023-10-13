@@ -33,6 +33,10 @@
     "build": "npm run build:esm && npm run build:cjs",
     "build:esm": "tsc --p tsconfig.esm.json",
     "build:cjs": "tsc --p tsconfig.cjs.json",
+    "test:cjs": "npm test -w wdio-cjs",
+    "test:esm": "npm test -w wdio-esm",
+    "test:features": "npm test -w wdio-features",
+    "test:ui5:local": "npm test -w openui5-sample-app",
     "lint": "eslint src examples --cache",
     "lint:ci": "eslint src examples -f @microsoft/eslint-formatter-sarif -o eslint.sarif"
   },
