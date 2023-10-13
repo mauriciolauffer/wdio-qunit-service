@@ -9,7 +9,7 @@ const log = logger('wdio-qunit-service');
  */
 async function qunitHooks(browserInstance: WebdriverIO.Browser): Promise<WdioQunitService.RunEndDetails> {
   log.debug('Waiting for QUnit to load...');
-  await browser.waitUntil(() => browser.execute(() => !!window?.QUnit), {
+  await browserInstance.waitUntil(() => browserInstance.execute(() => !!window?.QUnit), {
     timeout: 60000,
     timeoutMsg: 'QUnit took too long to load.',
     interval: 100

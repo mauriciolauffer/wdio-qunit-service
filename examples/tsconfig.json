@@ -1,4 +1,12 @@
 {
   "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "types": [
+      "node",
+      "@wdio/globals/types",
+      "@wdio/devtools-service",
+      "wdio-qunit-service"
+    ],
+  },
   "include": [".", "../src"]
 }

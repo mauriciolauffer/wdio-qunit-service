@@ -21,7 +21,6 @@
       "@wdio/types",
       "@wdio/globals/types",
       "@wdio/mocha-framework",
-      "@wdio/devtools-service",
       "qunit"
     ],
   },
