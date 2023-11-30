@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/mauriciolauffer/wdio-qunit-service/compare/v0.1.0...v0.1.1) (2023-11-30)
+
+
+### Bug Fixes
+
+* Nested QUnit Modules ([6fa35d6](https://github.com/mauriciolauffer/wdio-qunit-service/commit/6fa35d6d1ea2c72379acfc0ff7d9658e047e4c90))
+
 ## 0.1.0 (2023-10-13)
 
 
