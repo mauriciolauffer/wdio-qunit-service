@@ -31,11 +31,13 @@ declare module WdioQunitService { // eslint-disable-line @typescript-eslint/no-n
   interface ChildSuite {
     name: string;
     tests: TestReport[];
+    childSuites: ChildSuite[];
   }
 
   interface SuiteReport {
     name: string;
     tests: TestReport[];
+    childSuites: ChildSuite[];
   }
 
   interface TestReport {

@@ -28,7 +28,8 @@ async function qunitHooks(browserInstance: WebdriverIO.Browser): Promise<WdioQun
       for (const qunitChildSuite of QUnit.config.modules) {
         qunitResultsFromConfigModules.childSuites.push({
           name: qunitChildSuite.name,
-          tests: qunitChildSuite.suiteReport.tests
+          tests: qunitChildSuite.suiteReport.tests,
+          childSuites: qunitChildSuite.suiteReport.childSuites
         });
       }
       done(qunitResultsFromConfigModules);
@@ -41,17 +42,32 @@ async function qunitHooks(browserInstance: WebdriverIO.Browser): Promise<WdioQun
  */
 function generateTestCases(qunitResults: WdioQunitService.RunEndDetails): void {
   log.debug('Generating test cases...');
-  for (const qunitChildSuite of qunitResults.childSuites) {
+  convertQunitModules(qunitResults.childSuites);
+}
+
+/**
+ * Convert QUnit Modules into 'describe' blocks
+ */
+function convertQunitModules(qunitModules: WdioQunitService.ChildSuite[]): void {
+  for (const qunitChildSuite of qunitModules) {
     log.debug(`Creating "describe" ${qunitChildSuite.name}`);
     describe(qunitChildSuite.name, () => {
-      for (const qunitTest of qunitChildSuite.tests) {
-        log.debug(`Creating "it" ${qunitTest.name}`);
-        it(qunitTest.name, () => {
-          for (const qunitAssertion of qunitTest.assertions) {
-            log.debug(`Creating "expect" ${qunitTest.name} - ${qunitAssertion?.message}`);
-            expect(qunitAssertion.passed).toEqual(true);
-          }
-        });
+      convertQunitTests(qunitChildSuite.tests);
+      convertQunitModules(qunitChildSuite.childSuites);
+    });
+  }
+}
+
+/**
+ * Convert QUnit Tests into 'it' blocks
+ */
+function convertQunitTests(qunitTests: WdioQunitService.TestReport[]): void {
+  for (const qunitTest of qunitTests) {
+    log.debug(`Creating "it" ${qunitTest.name}`);
+    it(qunitTest.name, () => {
+      for (const qunitAssertion of qunitTest.assertions) {
+        log.debug(`Creating "expect" ${qunitTest.name} - ${qunitAssertion?.message}`);
+        expect(qunitAssertion.passed).toEqual(true);
       }
     });
   }

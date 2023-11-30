@@ -41,14 +41,14 @@
     "lint:ci": "eslint src examples -f @microsoft/eslint-formatter-sarif -o eslint.sarif"
   },
   "devDependencies": {
-    "@types/node": "^20.8.4",
-    "@types/qunit": "^2.19.6",
-    "@typescript-eslint/eslint-plugin": "^6.7.5",
-    "@typescript-eslint/parser": "^6.7.5",
+    "@types/node": "^20.10.1",
+    "@types/qunit": "^2.19.9",
+    "@typescript-eslint/eslint-plugin": "^6.13.1",
+    "@typescript-eslint/parser": "^6.13.1",
     "@wdio/types": "^8.16.12",
-    "eslint": "^8.51.0",
-    "eslint-config-mlauffer-nodejs": "^1.4.4",
-    "eslint-plugin-wdio": "^8.8.7",
+    "eslint": "^8.54.0",
+    "eslint-config-mlauffer-nodejs": "^1.4.5",
+    "eslint-plugin-wdio": "^8.20.0",
     "ts-node": "^10.9.1"
   },
   "peerDependencies": {
