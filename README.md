@@ -52,6 +52,8 @@ describe('QUnit test page', () => {
 
 It's recommended to have one WebdriverIO test file per QUnit HTML test page. This ensures the tests will run in parallel and fully isolated.
 
+Make sure the web server is up and running before executing the tests. `wdio` will not start the web server.
+
 ### Test results
 
 Test results could look like:
@@ -69,13 +71,15 @@ Straight forward [example](./examples/openui5-sample-app/) using the well known 
 
 - Create a WebdriverIO test file for [unit tests](./examples/openui5-sample-app/webapp/test/unit/unit.test.js) and another for [OPA5 tests](./examples/openui5-sample-app/webapp/test/integration/integration.test.js).
 
+- The web server must be running before executing the tests.
+
 - Run it $ `wdio run ./webapp/test/wdio.conf.js`
 
 ## Author
 
 Mauricio Lauffer
 
-* LinkedIn: [https://www.linkedin.com/in/mauriciolauffer](https://www.linkedin.com/in/mauriciolauffer)
+- LinkedIn: [https://www.linkedin.com/in/mauriciolauffer](https://www.linkedin.com/in/mauriciolauffer)
 
 ## License
 
