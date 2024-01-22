@@ -57,7 +57,7 @@ Make sure the web server is up and running before executing the tests. `wdio` wi
 ### Test results
 
 Test results could look like:
-![QUnit Service test results](./wdio-qunit-service-results.png)
+![QUnit Service test results](./wdio-qunit-service-results.png?raw=true)
 
 ## Examples
 
