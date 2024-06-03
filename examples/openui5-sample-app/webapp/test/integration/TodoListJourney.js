@@ -1,79 +1,78 @@
 /* global QUnit */
 
-sap.ui.define([
-	"sap/ui/test/opaQunit",
-	"sap/ui/demo/todo/test/integration/pages/App"
-], (opaTest) => {
-	"use strict";
+sap.ui.define(
+  ["sap/ui/test/opaQunit", "sap/ui/demo/todo/test/integration/pages/App"],
+  (opaTest) => {
+    "use strict";
 
-	QUnit.module("Todo List");
+    QUnit.module("Todo List");
 
-	opaTest("should add an item", (Given, When, Then) => {
+    opaTest("should add an item", (Given, When, Then) => {
+      // Arrangements
+      Given.iStartMyApp();
 
-		// Arrangements
-		Given.iStartMyApp();
+      //Actions
+      When.onTheAppPage.iEnterTextForNewItemAndPressEnter("my test");
 
-		//Actions
-		When.onTheAppPage.iEnterTextForNewItemAndPressEnter("my test");
+      // Assertions
+      Then.onTheAppPage.iShouldSeeTheItemBeingAdded(3, "my test");
 
-		// Assertions
-		Then.onTheAppPage.iShouldSeeTheItemBeingAdded(3, "my test");
+      // Cleanup
+      Then.iTeardownMyApp();
+    });
 
-		// Cleanup
-		Then.iTeardownMyApp();
-	});
+    opaTest("should remove a completed item", (Given, When, Then) => {
+      // Arrangements
+      Given.iStartMyApp();
 
-	opaTest("should remove a completed item", (Given, When, Then) => {
+      //Actions
+      When.onTheAppPage
+        .iEnterTextForNewItemAndPressEnter("my test")
+        .and.iSelectAllItems(true)
+        .and.iClearTheCompletedItems()
+        .and.iEnterTextForNewItemAndPressEnter("my test");
 
-		// Arrangements
-		Given.iStartMyApp();
+      // Assertions
+      Then.onTheAppPage.iShouldSeeAllButOneItemBeingRemoved("my test");
 
-		//Actions
-		When.onTheAppPage.iEnterTextForNewItemAndPressEnter("my test")
-			.and.iSelectAllItems(true)
-			.and.iClearTheCompletedItems()
-			.and.iEnterTextForNewItemAndPressEnter("my test");
+      // Cleanup
+      Then.iTeardownMyApp();
+    });
 
-		// Assertions
-		Then.onTheAppPage.iShouldSeeAllButOneItemBeingRemoved("my test");
+    opaTest("should select an item", (Given, When, Then) => {
+      // Arrangements
+      Given.iStartMyApp();
 
-		// Cleanup
-		Then.iTeardownMyApp();
-	});
+      //Actions
+      When.onTheAppPage
+        .iEnterTextForNewItemAndPressEnter("my test")
+        .and.iSelectTheLastItem(true);
 
-	opaTest("should select an item", (Given, When, Then) => {
+      // Assertions
+      Then.onTheAppPage.iShouldSeeTheLastItemBeingCompleted(true);
 
-		// Arrangements
-		Given.iStartMyApp();
+      // Cleanup
+      Then.iTeardownMyApp();
+    });
 
-		//Actions
-		When.onTheAppPage.iEnterTextForNewItemAndPressEnter("my test")
-			.and.iSelectTheLastItem(true);
+    opaTest("should unselect an item", (Given, When, Then) => {
+      // Arrangements
+      Given.iStartMyApp();
 
-		// Assertions
-		Then.onTheAppPage.iShouldSeeTheLastItemBeingCompleted(true);
+      //Actions
+      When.onTheAppPage
+        .iEnterTextForNewItemAndPressEnter("my test")
+        .and.iSelectAllItems(true)
+        .and.iClearTheCompletedItems()
+        .and.iEnterTextForNewItemAndPressEnter("my test")
+        .and.iSelectTheLastItem(true)
+        .and.iSelectTheLastItem(false);
 
-		// Cleanup
-		Then.iTeardownMyApp();
-	});
+      // Assertions
+      Then.onTheAppPage.iShouldSeeTheLastItemBeingCompleted(false);
 
-	opaTest("should unselect an item", (Given, When, Then) => {
-
-		// Arrangements
-		Given.iStartMyApp();
-
-		//Actions
-		When.onTheAppPage.iEnterTextForNewItemAndPressEnter("my test")
-			.and.iSelectAllItems(true)
-			.and.iClearTheCompletedItems()
-			.and.iEnterTextForNewItemAndPressEnter("my test")
-			.and.iSelectTheLastItem(true)
-			.and.iSelectTheLastItem(false);
-
-		// Assertions
-		Then.onTheAppPage.iShouldSeeTheLastItemBeingCompleted(false);
-
-		// Cleanup
-		Then.iTeardownMyApp();
-	});
-});
+      // Cleanup
+      Then.iTeardownMyApp();
+    });
+  }
+);
