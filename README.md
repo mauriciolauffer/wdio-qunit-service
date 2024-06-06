@@ -30,9 +30,9 @@ In order to use `QUnit Service` you just need to add it to the `services` list i
 
 ```js
 export const config = {
-    // ...
-    services: ['qunit'],
-    // ...
+  // ...
+  services: ["qunit"],
+  // ...
 };
 ```
 
@@ -41,9 +41,9 @@ export const config = {
 In your WebdriverIO test, you need to navigate to the QUnit HTML test page, then call `browser.getQUnitResults()`.
 
 ```js
-describe('QUnit test page', () => {
-  it('should pass QUnit tests', async () => {
-    await browser.url('http://localhost:8080/test/unit/unitTests.qunit.html');
+describe("QUnit test page", () => {
+  it("should pass QUnit tests", async () => {
+    await browser.url("http://localhost:8080/test/unit/unitTests.qunit.html");
     const qunitResults = await browser.getQUnitResults();
     expect(qunitResults).toBeTruthy();
   });

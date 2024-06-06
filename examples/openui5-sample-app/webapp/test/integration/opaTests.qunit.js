@@ -3,9 +3,9 @@
 QUnit.config.autostart = false;
 
 sap.ui.getCore().attachInit(() => {
-	"use strict";
+  "use strict";
 
-	sap.ui.require([
-		"sap/ui/demo/todo/test/integration/AllJourneys"
-	], () => QUnit.start());
+  sap.ui.require(["sap/ui/demo/todo/test/integration/AllJourneys"], () =>
+    QUnit.start()
+  );
 });

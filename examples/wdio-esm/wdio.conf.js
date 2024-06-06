@@ -1,12 +1,14 @@
 export const config = {
   specs: ['./*.test.ts'],
 
-  capabilities: [{
-    'browserName': 'chrome',
-    'goog:chromeOptions': {
-      args: ['headless', 'disable-gpu']
+  capabilities: [
+    {
+      'browserName': 'chrome',
+      'goog:chromeOptions': {
+        args: ['headless', 'disable-gpu']
+      }
     }
-  }],
+  ],
 
   logLevel: 'error',
   framework: 'mocha',

@@ -1,4 +1,4 @@
-exports.config = {
+export const config = {
   specs: ['./*.test.ts'],
 
   capabilities: [
@@ -14,7 +14,15 @@ exports.config = {
   framework: 'mocha',
   reporters: ['spec'],
 
-  services: ['qunit'],
+  services: [
+    'qunit',
+    [
+      'static-server',
+      {
+        folders: [{mount: '/', path: './'}]
+      }
+    ]
+  ],
   mochaOpts: {
     ui: 'bdd',
     timeout: 60000

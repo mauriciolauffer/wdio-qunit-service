@@ -1,5 +1,6 @@
 declare global {
-  namespace WebdriverIO { // eslint-disable-line @typescript-eslint/no-namespace
+  namespace WebdriverIO {
+    // eslint-disable-line @typescript-eslint/no-namespace
     interface Browser {
       getQUnitResults: () => Promise<WdioQunitService.RunEndDetails>;
     }
@@ -10,17 +11,33 @@ declare global {
   }
 
   interface QUnit {
-      on(eventName: string, callback: (details: WdioQunitService.RunEndDetails) => void | Promise<void>): void;
-      config: WdioQunitService.ExtendedConfig;
+    on(
+      eventName: string,
+      callback: (
+        details: WdioQunitService.RunEndDetails
+      ) => void | Promise<void>
+    ): void;
+    config: WdioQunitService.ExtendedConfig;
   }
 }
 
-declare module WdioQunitService { // eslint-disable-line @typescript-eslint/no-namespace
+declare module WdioQunitService {
+  // eslint-disable-line @typescript-eslint/no-namespace
   interface ExtendedConfig extends Config {
     started: number;
-    stats: string;
+    stats: Stats;
     modules: Module[];
     queue: [];
+    pq: ProcessingQueue;
+  }
+
+  interface ProcessingQueue {
+    finished: boolean;
+  }
+
+  interface Stats {
+    all: number;
+    bad: number;
   }
 
   interface Module {
@@ -42,7 +59,7 @@ declare module WdioQunitService { // eslint-disable-line @typescript-eslint/no-n
 
   interface TestReport {
     name: string;
-    assertions: AssertionReport[]
+    assertions: AssertionReport[];
   }
 
   interface AssertionReport {
@@ -51,7 +68,9 @@ declare module WdioQunitService { // eslint-disable-line @typescript-eslint/no-n
   }
 
   interface RunEndDetails {
+    status: string;
     childSuites: ChildSuite[];
+    tests: TestReport[];
   }
 }
 
