@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.2](https://github.com/mauriciolauffer/wdio-qunit-service/compare/v0.1.1...v0.1.2) (2024-06-06)
+
+
+### Bug Fixes
+
+* Get QUnit tests not included in a module ([fcecb15](https://github.com/mauriciolauffer/wdio-qunit-service/commit/fcecb15bc46c1c45895a69d34eb6f8f496734083))
+
 ## [0.1.1](https://github.com/mauriciolauffer/wdio-qunit-service/compare/v0.1.0...v0.1.1) (2023-11-30)
 
 ### Bug Fixes
