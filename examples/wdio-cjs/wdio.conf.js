@@ -1,5 +1,5 @@
 exports.config = {
-  specs: ['./*.test.ts'],
+  specs: ['./*.test.js'],
 
   capabilities: [
     {
@@ -10,7 +10,7 @@ exports.config = {
     }
   ],
 
-  logLevel: 'error',
+  logLevel: 'warn',
   framework: 'mocha',
   reporters: ['spec'],
 

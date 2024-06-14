@@ -5,7 +5,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "wdio run wdio.conf.js"
+    "test": "wdio run wdio.conf.js",
+    "test-no-specs": "wdio run wdio.no-specs.conf.js"
   },
   "devDependencies": {
     "@wdio/cli": "^8",

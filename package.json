@@ -37,16 +37,20 @@
     "test:esm": "npm test -w wdio-esm",
     "test:features": "npm test -w wdio-features",
     "test:qunit": "npm test -w vanilla-qunit",
+    "test:no:specs": "npm run test-no-specs -w vanilla-qunit",
     "test:ui5:local": "npm test -w openui5-sample-app",
     "lint": "eslint src examples --cache",
     "lint:ci": "eslint src examples -f @microsoft/eslint-formatter-sarif -o eslint.sarif"
   },
+  "dependencies": {
+    "cross-dirname": "^0.1.0"
+  },
   "devDependencies": {
-    "@types/node": "^20.14.0",
+    "@types/node": "^20.14.2",
     "@types/qunit": "^2.19.10",
-    "@typescript-eslint/eslint-plugin": "^7.11.0",
-    "@typescript-eslint/parser": "^7.11.0",
-    "@wdio/types": "^8.37.0",
+    "@typescript-eslint/eslint-plugin": "^7.13.0",
+    "@typescript-eslint/parser": "^7.13.0",
+    "@wdio/types": "^8.38.2",
     "eslint": "^8.57.0",
     "eslint-config-mlauffer-nodejs": "^1.4.6",
     "eslint-plugin-wdio": "^8.37.0",

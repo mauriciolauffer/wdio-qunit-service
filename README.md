@@ -29,6 +29,7 @@ If you haven't configured `WebdriverIO` yet, check the official [documentation](
 In order to use `QUnit Service` you just need to add it to the `services` list in your `wdio.conf.js` file. The wdio documentation has all information related to the [configuration file](https://webdriver.io/docs/configurationfile):
 
 ```js
+  // wdio.conf.js
 export const config = {
   // ...
   services: ["qunit"],
@@ -38,21 +39,43 @@ export const config = {
 
 ## Usage
 
+Make sure the web server is up and running before executing the tests. `wdio` will not start the web server.
+
+### With .spec or .test files
+
 In your WebdriverIO test, you need to navigate to the QUnit HTML test page, then call `browser.getQUnitResults()`.
 
 ```js
 describe("QUnit test page", () => {
   it("should pass QUnit tests", async () => {
     await browser.url("http://localhost:8080/test/unit/unitTests.qunit.html");
-    const qunitResults = await browser.getQUnitResults();
-    expect(qunitResults).toBeTruthy();
+    await browser.getQUnitResults();
   });
 });
 ```
 
 It's recommended to have one WebdriverIO test file per QUnit HTML test page. This ensures the tests will run in parallel and fully isolated.
 
-Make sure the web server is up and running before executing the tests. `wdio` will not start the web server.
+### Configuration only, no .spec or .test files
+
+If you don't want to create spec/test files, you can pass a list of QUnit HTML files to the configuration and the tests will be automatically generated.
+
+```js
+// wdio.conf.js
+export const config = {
+  // ...
+  baseUrl: 'http://localhost:8080',
+  services: [
+    ['qunit', {
+      paths: [
+        'unit-tests.html',
+        'integration-tests.html',
+        'test/qunit.html'
+      ]
+    }],
+  // ...
+};
+```
 
 ### Test results
 
@@ -69,9 +92,13 @@ Straight forward [example](./examples/openui5-sample-app/) using the well known 
 
 - Create a configuration file: [wdio.conf.js](.examples/openui5-sample-app/webapp/test/wdio.conf.js)
 
-- Create a WebdriverIO test file for [unit tests](./examples/openui5-sample-app/webapp/test/unit/unit.test.js) and another for [OPA5 tests](./examples/openui5-sample-app/webapp/test/integration/integration.test.js).
+- Tell `wdio` where to find the QUnit test files:
 
-- The web server must be running before executing the tests.
+- - Include the QUnit files to the [service configuration](./examples/vanilla-qunit/wdio.no-specs.conf.js)
+- - or
+- - Create a WebdriverIO test file for [unit tests](./examples/openui5-sample-app/webapp/test/unit/unit.test.js) and another for [OPA5 tests](./examples/openui5-sample-app/webapp/test/integration/integration.test.js)
+
+- The web server must be running before executing the tests
 
 - Run it $ `wdio run ./webapp/test/wdio.conf.js`
 

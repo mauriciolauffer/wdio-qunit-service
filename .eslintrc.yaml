@@ -11,3 +11,4 @@ parser: "@typescript-eslint/parser"
 rules:
   jsdoc/require-param: off
   jsdoc/require-returns: off
+  "@typescript-eslint/no-namespace": off
