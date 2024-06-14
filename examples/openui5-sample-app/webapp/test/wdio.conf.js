@@ -10,7 +10,7 @@ export const config = {
     },
   ],
 
-  logLevel: "error",
+  logLevel: "warn",
   framework: "mocha",
   reporters: ["spec"],
 

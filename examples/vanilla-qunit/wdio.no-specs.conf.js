@@ -1,6 +1,4 @@
 export const config = {
-  specs: ['./*.test.ts'],
-
   capabilities: [
     {
       'browserName': 'chrome',
@@ -14,22 +12,25 @@ export const config = {
   framework: 'mocha',
   reporters: ['spec'],
 
+  baseUrl: 'http://localhost:4567',
   services: [
-    'qunit',
+    ['qunit', {
+      paths: [
+        'qunit-tag.html',
+        'qunit-modules.html',
+        './qunit-no-modules.html'
+      ]
+    }],
     [
-      'devtools',
+      'static-server',
       {
-        coverageReporter: {
-          enable: true,
-          type: 'html',
-          logDir: './coverage',
-          exclude: ['/resources/', '/test/']
-        }
+        folders: [{mount: '/', path: './'}]
       }
-    ]
+    ],
+    'devtools'
   ],
-
   mochaOpts: {
-    ui: 'bdd'
+    ui: 'bdd',
+    timeout: 60000
   }
 };
