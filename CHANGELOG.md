@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/mauriciolauffer/wdio-qunit-service/compare/v0.1.2...v0.2.0) (2024-06-14)
+
+
+### Features
+
+* Auto generate tests for QUnit ([#15](https://github.com/mauriciolauffer/wdio-qunit-service/issues/15)) ([0b60bf5](https://github.com/mauriciolauffer/wdio-qunit-service/commit/0b60bf5348305062f90a85b35fbfef3697b4d5c2))
+
 ## [0.1.2](https://github.com/mauriciolauffer/wdio-qunit-service/compare/v0.1.1...v0.1.2) (2024-06-06)
 
 
