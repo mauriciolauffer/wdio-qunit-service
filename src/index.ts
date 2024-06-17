@@ -87,7 +87,7 @@ function hasQunitFinished(): boolean {
  * Await for QUnit to finish running the tests
  */
 function QunitFinishedEventInBrowserContext(
-    done: (result: WdioQunitService.RunEndDetails | void) => void
+    done: (result?: WdioQunitService.RunEndDetails) => void
 ) {
   QUnit.on('runEnd', function(qunitRunEnd) {
     console.debug('QUnit runEnd event was triggered.'); // eslint-disable-line no-console

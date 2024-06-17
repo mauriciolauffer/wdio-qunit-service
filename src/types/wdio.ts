@@ -1,11 +1,11 @@
 declare global {
-  namespace WebdriverIO {
+  namespace WebdriverIO { // eslint-disable-line @typescript-eslint/no-namespace
     interface Browser {
       getQUnitResults: () => Promise<WdioQunitService.RunEndDetails>;
     }
   }
 
-  var _WdioQunitServiceHtmlFiles: string[]; // eslint-disable-line
+  var _WdioQunitServiceHtmlFiles: string[]; // eslint-disable-line no-var
 
   interface Window {
     QUnit: QUnit;
@@ -22,7 +22,7 @@ declare global {
   }
 }
 
-declare module WdioQunitService {
+declare module WdioQunitService { // eslint-disable-line
   interface ExtendedConfig extends Config {
     started: number;
     stats: Stats;

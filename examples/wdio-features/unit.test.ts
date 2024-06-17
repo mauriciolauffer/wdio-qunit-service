@@ -1,5 +1,5 @@
 describe('QUnit test page', function() {
-  it('should pass QUnit tests and get code coverage', async () => {
+  it('should pass QUnit tests and get code coverage', async function() {
     await browser.url(
         'https://ui5.sap.com/test-resources/sap/m/demokit/orderbrowser/webapp/test/unit/unitTests.qunit.html'
     );
