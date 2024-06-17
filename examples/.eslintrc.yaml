@@ -1,5 +1,0 @@
-root: false
-plugins:
-  - wdio
-extends:
-  - plugin:wdio/recommended
