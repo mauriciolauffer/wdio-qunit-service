@@ -1,10 +1,10 @@
 {
-  "name": "wdio-qunit-service",
+  "name": "@pmoeller91-yottaa/wdio-qunit-service",
   "version": "0.2.0",
-  "description": "WebdriverIO service for running QUnit browser-based tests and dinamically converting them to wdio test suites.",
-  "author": "Mauricio Lauffer",
+  "description": "Forked version of WebdriverIO service for running QUnit browser-based tests and dynamically converting them to WDIO test suites.",
+  "author": "Mauricio Lauffer, Patrick Moeller",
   "license": "MIT",
-  "homepage": "https://github.com/mauriciolauffer/wdio-qunit-service#readme",
+  "homepage": "https://github.com/pmoeller91-yottaa/wdio-qunit-service#readme",
   "type": "module",
   "main": "./dist/esm/index.js",
   "types": "./dist/esm/index.d.ts",
@@ -33,6 +33,7 @@
     "build": "npm run build:esm && npm run build:cjs",
     "build:esm": "tsc --p tsconfig.esm.json",
     "build:cjs": "tsc --p tsconfig.cjs.json",
+    "test": "run-s test:esm test:features test:qunit test:no:specs test:cjs",
     "test:cjs": "npm test -w wdio-cjs",
     "test:esm": "npm test -w wdio-esm",
     "test:features": "npm test -w wdio-features",
@@ -53,6 +54,7 @@
     "eslint-config-mlauffer-nodejs": "^2.0.3",
     "eslint-plugin-mocha": "^10.4.3",
     "eslint-plugin-wdio": "^8.37.0",
+    "npm-run-all": "^4.1.5",
     "ts-node": "^10.9.2",
     "typescript-eslint": "^8.0.0-alpha.30",
     "vitest": "^1.6.0"
@@ -67,9 +69,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mauriciolauffer/wdio-qunit-service.git"
+    "url": "git+https://github.com/pmoeller91-yottaa/wdio-qunit-service.git"
   },
   "bugs": {
-    "url": "https://github.com/mauriciolauffer/wdio-qunit-service/issues"
+    "url": "https://github.com/pmoeller91-yottaa/wdio-qunit-service/issues"
   }
 }

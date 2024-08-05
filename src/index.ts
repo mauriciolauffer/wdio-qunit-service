@@ -1,5 +1,4 @@
-import type {Capabilities, Services} from '@wdio/types';
-import type {ServiceEntry} from '@wdio/types/build/Services';
+import type {Capabilities, Services } from '@wdio/types';
 import type WdioQunitService from './types/wdio';
 import {join} from 'node:path';
 import {URL} from 'node:url';
@@ -7,16 +6,6 @@ import logger from '@wdio/logger';
 import {getDirname} from 'cross-dirname';
 
 const log = logger('wdio-qunit-service');
-
-/**
- * Get QUnit service configuration
- */
-function getServiceConfig(services?: ServiceEntry[]): WdioQunitService.ServiceOption {
-  return services?.filter((service) => Array.isArray(service) && service?.find((option) => option === 'qunit'))
-      .flat()
-      .filter((service) => service && (service as WdioQunitService.ServiceOption)?.paths?.length > 0)
-      ?.[0] as WdioQunitService.ServiceOption;
-}
 
 /**
  * Get path to the QUnit HTML files
@@ -38,7 +27,8 @@ function getQUnitHtmlFiles(paths: string[], baseUrl?: string): string[] {
  * Use QUnit events to get test results when QUnit run has ended
  */
 async function qunitHooks(
-    browserInstance: WebdriverIO.Browser
+    browserInstance: WebdriverIO.Browser,
+    options: WdioQunitService.ServiceOption,
 ): Promise<WdioQunitService.RunEndDetails> {
   log.debug('Waiting for QUnit to load...');
   await browserInstance.waitUntil(
@@ -49,22 +39,19 @@ async function qunitHooks(
         interval: 50
       }
   );
+
   log.debug('Waiting for QUnit runEnd event...');
-  let qunitResults = await browserInstance.executeAsync(
-      QunitFinishedEventInBrowserContext
+  const qunitResults = await browserInstance.executeAsync(
+      QunitFinishedEventInBrowserContext, options.autostartDelay
   );
+
   if (!qunitResults) {
-    await browserInstance.waitUntil(
-        () => browserInstance.execute(hasQunitFinished),
-        {
-          timeout: 120000,
-          timeoutMsg: 'QUnit took too long to complete.',
-          interval: 100
-        }
-    );
-    qunitResults = await browserInstance.executeAsync(
-        QunitExtractResultsInBrowserContext
-    );
+    log.error('QUnit test run finished too quickly to collect results. Please disable autostart for QUnit while executing tests via WDIO, or add a delay to test start.');
+    return {
+      status: 'failed',
+      childSuites: [],
+      tests: [],
+    }
   }
   return qunitResults;
 }
@@ -79,58 +66,60 @@ function isQunitLoaded(): boolean {
 /**
  * Await for QUnit to finish running the tests
  */
-function hasQunitFinished(): boolean {
-  return !!QUnit.config?.started && QUnit.config?.queue?.length === 0 && (QUnit.config.pq === undefined || !!QUnit.config?.pq?.finished);
-}
-
-/**
- * Await for QUnit to finish running the tests
- */
-function QunitFinishedEventInBrowserContext(
+async function QunitFinishedEventInBrowserContext(
+    autostartDelay: number,
     done: (result?: WdioQunitService.RunEndDetails) => void
 ) {
   QUnit.on('runEnd', function(qunitRunEnd) {
     console.debug('QUnit runEnd event was triggered.'); // eslint-disable-line no-console
     done(qunitRunEnd);
   });
-  setTimeout(() => {
-    // Check whether tests have already been completed, QUnit event runEnd won't be triggered
-    if (QUnit.config?.started > 0 && QUnit.config?.queue?.length === 0) {
-      console.debug('QUnit.config.started:', QUnit.config?.started); // eslint-disable-line no-console
-      console.debug('QUnit.config.queue.length:', QUnit.config?.queue?.length); // eslint-disable-line no-console
-      console.debug('QUnit.config.pq.finished:', QUnit.config?.pq?.finished); // eslint-disable-line no-console
-      done();
-    }
-  }, 100);
-}
 
-/**
- * Extract QUnit results when QUnit runEnd event is not triggered
- */
-function QunitExtractResultsInBrowserContext(
-    done: (result: WdioQunitService.RunEndDetails) => void
-) {
-  const qunitResultsFromConfigModules: WdioQunitService.RunEndDetails = {
-    status: '',
-    childSuites: [],
-    tests: []
-  };
-  for (const qunitConfigModule of QUnit.config.modules) {
-    qunitResultsFromConfigModules.status =
-      QUnit.config.stats.all > 0 && QUnit.config.stats.bad === 0 ?
-        'passed' :
-        'failed';
-    qunitResultsFromConfigModules.childSuites = [
-      ...qunitResultsFromConfigModules.childSuites,
-      ...qunitConfigModule.suiteReport.childSuites
-    ];
-    qunitResultsFromConfigModules.tests = [
-      ...qunitResultsFromConfigModules.tests,
-      ...qunitConfigModule.suiteReport.tests
-    ];
+  if (QUnit.config?.started > 0 && QUnit.config?.queue?.length === 0) {
+    console.debug('QUnit.config.started:', QUnit.config?.started); // eslint-disable-line no-console
+    console.debug('QUnit.config.queue.length:', QUnit.config?.queue?.length); // eslint-disable-line no-console
+    console.debug('QUnit.config.pq.finished:', QUnit.config?.pq?.finished); // eslint-disable-line no-console
+    done();
   }
-  console.debug('QUnit runEnd event will not be triggered, manually finishing it.'); // eslint-disable-line no-console
-  done(qunitResultsFromConfigModules);
+
+  /**
+   * Automatically tries to start QUnit after a configured delay if it is not already running.
+   */
+  async function startQunit(): Promise<void> {
+    let started = false;
+
+    if (window.QUnit?.config?.autostart !== false) {
+      return;
+    }
+    if (window.QUnit.config.started > 0) {
+      return;
+    }
+    if (!window.QUnit.start) {
+      return;
+    }
+    const naturalRunStartPromise = new Promise<void>((resolve) => {
+      QUnit.on('runStart', () => {
+        if (!started) {
+          console.debug('QUnit started by itself'); // eslint-disable-line no-console
+          started = true;
+          resolve();
+        }
+      })
+    });
+    const automaticRunStartPromise = new Promise<void>((resolve) => {
+      window.setTimeout(() => {
+        if (!started) {
+          console.debug('QUnit started automatically by service'); // eslint-disable-line no-console
+          window.QUnit.start();
+          resolve();
+        }
+      }, autostartDelay)
+    });
+    return Promise.race([naturalRunStartPromise, automaticRunStartPromise]);
+  }
+
+  console.debug('Starting QUnit if necessary...'); // eslint-disable-line no-console
+  await startQunit();
 }
 
 /**
@@ -182,14 +171,22 @@ function convertQunitTests(qunitTests: WdioQunitService.TestReport[]): void {
 /**
  * Get QUnit results
  */
-async function getQUnitResults(this: WebdriverIO.Browser): Promise<WdioQunitService.RunEndDetails> {
+async function getQUnitResults(this: WebdriverIO.Browser, options: WdioQunitService.ServiceOption): Promise<WdioQunitService.RunEndDetails> {
   log.info('Getting QUnit results...');
-  const qunitResults = await qunitHooks(this); // eslint-disable-line no-invalid-this
+  const qunitResults = await qunitHooks(this, options);
   generateTestCases(qunitResults);
   return qunitResults;
 }
 
 export default class QUnitService implements Services.ServiceInstance {
+  static defaultOptions: Required<Pick<WdioQunitService.ServiceOption, 'paths' | 'autostartDelay'>> = {
+    autostartDelay: 100,
+    paths: [],
+  };
+  public options: WdioQunitService.ServiceOption & typeof QUnitService.defaultOptions;
+  constructor(options: WdioQunitService.ServiceOption) {
+    this.options = {...QUnitService.defaultOptions, ...options};
+  }
   before(
       capabilities: Capabilities.RemoteCapability,
       specs: string[],
@@ -198,14 +195,14 @@ export default class QUnitService implements Services.ServiceInstance {
     log.debug('Executing before hook...');
     browserInstance.addCommand(
         'getQUnitResults',
-        getQUnitResults.bind(browserInstance)
+        getQUnitResults.bind(browserInstance, this.options)
     );
   }
 
   beforeSession(config: Omit<WebdriverIO.Config, 'capabilities'>): void {
     log.debug('Executing beforeSession hook...');
-    const serviceConfig = getServiceConfig(config?.services || []);
-    const files = getQUnitHtmlFiles(serviceConfig?.paths || [], config?.baseUrl);
+    const serviceConfig = this.options;
+    const files = getQUnitHtmlFiles(serviceConfig.paths, config?.baseUrl);
     if (files.length > 0) {
       globalThis._WdioQunitServiceHtmlFiles = files;
     }
@@ -213,9 +210,11 @@ export default class QUnitService implements Services.ServiceInstance {
 }
 
 class CustomLauncher implements Services.ServiceInstance {
+  constructor(public options: WdioQunitService.ServiceOption) {
+  }
   onPrepare(config: WebdriverIO.Config): void {
     log.debug('Executing onPrepare launcher...');
-    const serviceConfig = getServiceConfig(config?.services);
+    const serviceConfig = this.options;
     const files = getQUnitHtmlFiles(serviceConfig?.paths || [], config?.baseUrl);
     if (files.length > 0) {
       config.specs?.push(join(getDirname(), 'default.test.js'));

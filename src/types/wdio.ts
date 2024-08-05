@@ -76,7 +76,8 @@ declare module WdioQunitService { // eslint-disable-line
   type ServiceOption = (
     WebdriverIO.ServiceOption |
     {
-      paths?: string[]
+      paths?: string[],
+      autostartDelay?: number,
     }
   )
 }

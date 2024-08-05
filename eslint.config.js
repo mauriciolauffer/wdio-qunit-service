@@ -18,7 +18,14 @@ export default tseslint.config(
     },
     rules: {
       "jsdoc/require-param": "off",
-      "jsdoc/require-returns": "off"
+      "jsdoc/require-returns": "off",
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          "argsIgnorePattern": "^_",
+          "varsIgnorePattern": "^_",
+        }
+      ]
     }
   },
   {

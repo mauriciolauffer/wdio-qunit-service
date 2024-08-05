@@ -15,7 +15,7 @@ export const config = {
   reporters: ['spec'],
 
   services: [
-    'qunit',
+    ['qunit', { autostartDelay: 1000 }],
     [
       'devtools',
       {
