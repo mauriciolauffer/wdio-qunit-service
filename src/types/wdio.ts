@@ -42,6 +42,10 @@ declare module WdioQunitService { // eslint-disable-line
 
   interface Module {
     name: string;
+    stats: {
+      all: number,
+      bad: number
+    }
     suiteReport: SuiteReport;
   }
 
@@ -52,13 +56,16 @@ declare module WdioQunitService { // eslint-disable-line
   }
 
   interface SuiteReport {
+    status: string | null | undefined,
     name: string;
     tests: TestReport[];
     childSuites: ChildSuite[];
   }
 
   interface TestReport {
+    suiteName: string | null | undefined,
     name: string;
+    status: string
     assertions: AssertionReport[];
   }
 
@@ -68,6 +75,7 @@ declare module WdioQunitService { // eslint-disable-line
   }
 
   interface RunEndDetails {
+    name: string | null | undefined,
     status: string;
     childSuites: ChildSuite[];
     tests: TestReport[];

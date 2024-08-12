@@ -12,7 +12,3 @@ QUnit.test('Should pass dummy no module async test 2', (assert) => {
     done();
   }, 500);
 });
-
-QUnit.test('Should pass dummy no module test 1', (assert) => {
-  assert.ok(true);
-});

@@ -20,13 +20,31 @@
     <link
       rel="stylesheet"
       type="text/css"
-      href="../../resources/sap/ui/thirdparty/qunit-2.css"
+      href="../../resources/sap/ui/thirdparty/qunit.css"
     />
+    <script src="./wdio-qunit.js"></script>
 
-    <script src="../../resources/sap/ui/thirdparty/qunit-2.js"></script>
-    <script src="../../resources/sap/ui/qunit/qunit-junit.js"></script>
+    <script src="../../resources/sap/ui/thirdparty/qunit.js"></script>
+    <script>
+      QUnit.test("Should pass dummy no module test 1", (assert) => {
+      assert.ok(true);
+    });
+
+    QUnit.test("Should pass dummy no module test 2", (assert) => {
+      assert.ok(true);
+    });
+
+    QUnit.test("Should pass dummy no module async test 1", (assert) => {
+      return new Promise(function (resolve, reject) {
+        assert.ok(true);
+        setTimeout(resolve, 200);
+      });
+    });
+  </script>
+      <script src="../../resources/sap/ui/qunit/qunit-junit.js"></script>
     <script src="../../resources/sap/ui/thirdparty/sinon.js"></script>
     <script src="../../resources/sap/ui/thirdparty/sinon-qunit.js"></script>
+
     <script src="unitTests.qunit.js"></script>
   </head>
   <body>
