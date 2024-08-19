@@ -1,35 +1,35 @@
 export const config = {
-  specs: ['./*.test.ts'],
+  specs: ["./*.test.ts"],
 
   capabilities: [
     {
-      'browserName': 'chrome',
-      'goog:chromeOptions': {
-        args: ['headless', 'disable-gpu']
-      }
-    }
+      browserName: "chrome",
+      "goog:chromeOptions": {
+        args: ["headless", "disable-gpu"],
+      },
+    },
   ],
 
-  logLevel: 'warn',
-  framework: 'mocha',
-  reporters: ['spec'],
+  logLevel: "warn",
+  framework: "mocha",
+  reporters: ["spec"],
 
   services: [
-    'qunit',
+    "qunit",
     [
-      'devtools',
+      "devtools",
       {
         coverageReporter: {
           enable: true,
-          type: 'html',
-          logDir: './coverage',
-          exclude: ['/resources/', '/test/']
-        }
-      }
-    ]
+          type: "html",
+          logDir: "./coverage",
+          exclude: ["/resources/", "/test/"],
+        },
+      },
+    ],
   ],
 
   mochaOpts: {
-    ui: 'bdd'
-  }
+    ui: "bdd",
+  },
 };

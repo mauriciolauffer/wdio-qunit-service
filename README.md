@@ -29,7 +29,7 @@ If you haven't configured `WebdriverIO` yet, check the official [documentation](
 In order to use `QUnit Service` you just need to add it to the `services` list in your `wdio.conf.js` file. The wdio documentation has all information related to the [configuration file](https://webdriver.io/docs/configurationfile):
 
 ```js
-  // wdio.conf.js
+// wdio.conf.js
 export const config = {
   // ...
   services: ["qunit"],

@@ -13,13 +13,13 @@ export default tseslint.config(
   {
     languageOptions: {
       globals: {
-        ...globals.qunit
+        ...globals.qunit,
       },
     },
     rules: {
       "jsdoc/require-param": "off",
-      "jsdoc/require-returns": "off"
-    }
+      "jsdoc/require-returns": "off",
+    },
   },
   {
     ...wdioPlugin.configs["flat/recommended"],
@@ -28,5 +28,5 @@ export default tseslint.config(
   {
     ...mochaPlugin.configs.flat.recommended,
     files: ["examples/**/*.test.*"],
-  }
+  },
 );

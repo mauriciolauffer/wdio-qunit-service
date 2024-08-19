@@ -1,5 +1,6 @@
 declare global {
-  namespace WebdriverIO { // eslint-disable-line @typescript-eslint/no-namespace
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace WebdriverIO {
     interface Browser {
       getQUnitResults: () => Promise<WdioQunitService.RunEndDetails>;
     }
@@ -8,21 +9,22 @@ declare global {
   var _WdioQunitServiceHtmlFiles: string[]; // eslint-disable-line no-var
 
   interface Window {
-    QUnit: QUnit;
+    QUnit: QUnit | null | object;
   }
 
   interface QUnit {
     on(
       eventName: string,
       callback: (
-        details: WdioQunitService.RunEndDetails
-      ) => void | Promise<void>
+        details: WdioQunitService.RunEndDetails,
+      ) => void | Promise<void>,
     ): void;
     config: WdioQunitService.ExtendedConfig;
   }
 }
 
-declare module WdioQunitService { // eslint-disable-line
+// eslint-disable-next-line
+declare module WdioQunitService {
   interface ExtendedConfig extends Config {
     started: number;
     stats: Stats;
@@ -43,9 +45,9 @@ declare module WdioQunitService { // eslint-disable-line
   interface Module {
     name: string;
     stats: {
-      all: number,
-      bad: number
-    }
+      all: number;
+      bad: number;
+    };
     suiteReport: SuiteReport;
   }
 
@@ -56,16 +58,16 @@ declare module WdioQunitService { // eslint-disable-line
   }
 
   interface SuiteReport {
-    status: string | null | undefined,
+    status: string | null | undefined;
     name: string;
     tests: TestReport[];
     childSuites: ChildSuite[];
   }
 
   interface TestReport {
-    suiteName: string | null | undefined,
+    suiteName: string | null | undefined;
     name: string;
-    status: string
+    status: string;
     assertions: AssertionReport[];
   }
 
@@ -75,18 +77,17 @@ declare module WdioQunitService { // eslint-disable-line
   }
 
   interface RunEndDetails {
-    name: string | null | undefined,
+    name: string | null | undefined;
     status: string;
     childSuites: ChildSuite[];
     tests: TestReport[];
   }
 
-  type ServiceOption = (
-    WebdriverIO.ServiceOption |
-    {
-      paths?: string[]
-    }
-  )
+  type ServiceOption =
+    | WebdriverIO.ServiceOption
+    | {
+        paths?: string[];
+      };
 }
 
 export default WdioQunitService;

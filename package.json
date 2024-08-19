@@ -33,41 +33,38 @@
     "build": "npm run build:esm && npm run build:cjs",
     "build:esm": "tsc --p tsconfig.esm.json",
     "build:cjs": "tsc --p tsconfig.cjs.json",
-    "test:cjs": "npm test -w wdio-cjs",
-    "test:esm": "npm test -w wdio-esm",
-    "test:features": "npm test -w wdio-features",
-    "test:qunit": "npm test -w vanilla-qunit",
-    "test:qunit:v1.18": "npm test -w qunit-v1.18.0",
-    "test:no:specs": "npm run test-no-specs -w vanilla-qunit",
-    "test:ui5:local": "npm test -w openui5-sample-app",
-    "test": "wdio run examples/wdio.conf.js --suite wdio-esm --suite wdio-cjs --suite wdio-features --suite qunit-v1.18 --suite qunit-v1.23 --suite qunit-v2.3 --suite qunit-v2.10",
-    "test:qunit:new": "wdio run examples/wdio.conf.js --suite qunit-v2",
-    "lint": "eslint  --cache",
-    "lint:ci": "eslint src examples -f @microsoft/eslint-formatter-sarif -o eslint.sarif"
+    "test": "wdio run examples/wdio.conf.js --suite wdio-esm --suite wdio-cjs --suite qunit-v1.18 --suite qunit-v1.23 --suite qunit-v2.3 --suite qunit-v2.10",
+    "test:no:specs": "wdio run examples/wdio.no-specs.conf.js",
+    "lint": "prettier . --check --cache && eslint --cache",
+    "lint:ci": "prettier . --check --cache && eslint -f @microsoft/eslint-formatter-sarif -o eslint.sarif",
+    "pretty": "prettier . --write --cache"
   },
   "dependencies": {
     "cross-dirname": "^0.1.0"
   },
   "devDependencies": {
-    "@types/node": "^22.2.0",
+    "@types/node": "^22.3.0",
     "@types/qunit": "^2.19.10",
     "@wdio/devtools-service": "^8.40.0",
-    "@wdio/types": "^8.39.0",
+    "@wdio/logger": "^9.0.0",
+    "@wdio/static-server-service": "^8.40.3",
+    "@wdio/types": "^9.0.0",
     "eslint": "^9.9.0",
     "eslint-config-mlauffer-nodejs": "^2.0.4",
     "eslint-plugin-mocha": "^10.5.0",
-    "eslint-plugin-wdio": "^8.37.0",
+    "eslint-plugin-wdio": "^9.0.0",
+    "prettier": "^3.3.3",
     "ts-node": "^10.9.2",
-    "typescript-eslint": "^8.0.1",
+    "typescript-eslint": "^8.1.0",
     "vitest": "^2.0.5"
   },
   "peerDependencies": {
-    "@wdio/cli": ">=8",
-    "@wdio/local-runner": ">=8",
-    "@wdio/logger": ">=8",
-    "@wdio/mocha-framework": ">=8",
+    "@wdio/cli": "^8",
+    "@wdio/local-runner": "^8",
+    "@wdio/logger": "^8",
+    "@wdio/mocha-framework": "^8",
     "typescript": "^5",
-    "webdriverio": ">=8"
+    "webdriverio": "^8"
   },
   "repository": {
     "type": "git",

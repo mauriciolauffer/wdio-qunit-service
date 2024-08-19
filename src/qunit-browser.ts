@@ -3,29 +3,53 @@ import type WdioQunitService from "./types/wdio";
 /**
  * Closure function to be executed in the Browser context, not in the Nodejs one
  */
-export default async function getQUnitReportResults(done: (result: WdioQunitService.RunEndDetails) => void) {
+export default async function getQUnitReportResults(
+  done: (result: WdioQunitService.RunEndDetails) => void,
+) {
   class QUnitBrowserHandler {
     /**
      * Await for QUnit to be made available in the page
      */
     hasQunitLoaded(): Promise<void> {
       return new Promise((resolve): void => {
-        if (window?.QUnit) {
-          resolve();
-        } else {
-          let value = window["QUnit"];
-          Object.defineProperty(window, "QUnit", {
-            get() {
-              return value;
-            },
-            set(newValue) {
-              if (newValue !== value) {
-                value = newValue;
+        setTimeout(() => {
+          console.log(1111111111111)
+          if (window?.QUnit) {
+            console.log(2222222222222)
+            resolve();
+          } else {
+            let value = window["QUnit"];
+            console.log(3333333333333)
+            console.log(value)
+
+            const intervalId = setInterval(() => {
+              console.log(66666666666)
+            if (window.QUnit) {
+              console.log(7777777777)
+              clearInterval(intervalId);
+              resolve();
+            }
+          }, 100);
+
+            Object.defineProperty(window, "QUnit", {
+              configurable: true,
+              enumerable: true,
+              get() {
+                return value;
+              },
+              set(newValue) {
+                console.log(44444444444)
+                if (newValue !== value) {
+                  console.log(55555555555555)
+                  value = newValue;
+                  // resolve();
+                }
+                console.log(value)
                 resolve();
-              }
-            },
-          });
-        }
+              },
+            });
+          }
+        }, 0);
       });
     }
 
@@ -58,10 +82,22 @@ export default async function getQUnitReportResults(done: (result: WdioQunitServ
           if (eventCalled) {
             clearInterval(intervalId);
           } else if (this.hasQunitFinished()) {
-            console.info("QUnit events |runEnd| and |done| were not called, but execution has finished."); // eslint-disable-line no-console
-            console.debug("QUnit.config.started:", QUnit.config?.started); // eslint-disable-line no-console
-            console.debug("QUnit.config.queue.length:", QUnit.config?.queue?.length); // eslint-disable-line no-console
-            console.debug("QUnit.config.pq.finished:", QUnit.config?.pq?.finished); // eslint-disable-line no-console
+            // eslint-disable-next-line no-console
+            console.info(
+              "QUnit events |runEnd| and |done| were not called, but execution has finished.",
+            );
+            // eslint-disable-next-line no-console
+            console.debug("QUnit.config.started:", QUnit.config?.started);
+            // eslint-disable-next-line no-console
+            console.debug(
+              "QUnit.config.queue.length:",
+              QUnit.config?.queue?.length,
+            );
+            // eslint-disable-next-line no-console
+            console.debug(
+              "QUnit.config.pq.finished:",
+              QUnit.config?.pq?.finished,
+            );
             clearInterval(intervalId);
             resolve(placeholder);
           }
@@ -104,7 +140,7 @@ export default async function getQUnitReportResults(done: (result: WdioQunitServ
        * Build modules
        */
       function buildModules(
-        elements?: HTMLCollection
+        elements?: HTMLCollection,
       ): WdioQunitService.SuiteReport[] {
         const childSuites: WdioQunitService.SuiteReport[] = [];
         if (!elements) {
@@ -117,7 +153,7 @@ export default async function getQUnitReportResults(done: (result: WdioQunitServ
             continue;
           }
           const tests = buildTests(elements).filter(
-            (test) => test.suiteName === moduleName
+            (test) => test.suiteName === moduleName,
           );
           const childSuite: WdioQunitService.SuiteReport = {
             childSuites: [],
@@ -138,7 +174,7 @@ export default async function getQUnitReportResults(done: (result: WdioQunitServ
        * Build tests
        */
       function buildTests(
-        elements?: HTMLCollection
+        elements?: HTMLCollection,
       ): WdioQunitService.TestReport[] {
         const tests: WdioQunitService.TestReport[] = [];
         if (!elements) {
@@ -152,7 +188,7 @@ export default async function getQUnitReportResults(done: (result: WdioQunitServ
             suiteName: moduleName,
             status: node.classList.contains("pass") ? "passed" : "failed",
             assertions: buildAsserts(
-              node.querySelector(".qunit-assert-list")?.children
+              node.querySelector(".qunit-assert-list")?.children,
             ),
           };
           tests.push(item);
@@ -164,7 +200,7 @@ export default async function getQUnitReportResults(done: (result: WdioQunitServ
        * Build asserts
        */
       function buildAsserts(
-        elements?: HTMLCollection
+        elements?: HTMLCollection,
       ): WdioQunitService.AssertionReport[] {
         const asserts: WdioQunitService.AssertionReport[] = [];
         if (!elements) {
@@ -214,7 +250,7 @@ export default async function getQUnitReportResults(done: (result: WdioQunitServ
     async getQUnitSuiteReport(): Promise<WdioQunitService.RunEndDetails> {
       await this.hasQunitLoaded();
       let results = await this.onQunitFinished();
-      console.info(`QUnit version ${this.getQUnitVersion()} detected.`);  // eslint-disable-line no-console
+      console.info(`QUnit version ${this.getQUnitVersion()} detected.`); // eslint-disable-line no-console
       if (!results) {
         results =
           parseInt(this.getQUnitVersion().split(".")[0], 10) > 1
