@@ -2,22 +2,22 @@ declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace WebdriverIO {
     interface Browser {
-      getQUnitResults: () => Promise<WdioQunitService.RunEndDetails>;
+      getQUnitResults: () => Promise<WdioQunitService.SuiteReport>;
     }
   }
 
   var _WdioQunitServiceHtmlFiles: string[]; // eslint-disable-line no-var
+  // var _wdioQunitService: WdioQunitService.Reporter; // eslint-disable-line no-var
 
   interface Window {
     QUnit: QUnit | null | object;
+    _wdioQunitService: WdioQunitService.Reporter;
   }
 
   interface QUnit {
     on(
       eventName: string,
-      callback: (
-        details: WdioQunitService.RunEndDetails,
-      ) => void | Promise<void>,
+      callback: (details: WdioQunitService.SuiteReport) => void | Promise<void>,
     ): void;
     config: WdioQunitService.ExtendedConfig;
   }
@@ -31,6 +31,14 @@ declare module WdioQunitService {
     modules: Module[];
     queue: [];
     pq: ProcessingQueue;
+  }
+
+  interface Reporter {
+    collect: {
+      modules: WdioQunitService.ModuleDone[];
+      tests: WdioQunitService.TestDone[];
+    };
+    suiteReport: WdioQunitService.SuiteReport;
   }
 
   interface ProcessingQueue {
@@ -51,36 +59,54 @@ declare module WdioQunitService {
     suiteReport: SuiteReport;
   }
 
-  interface ChildSuite {
+  interface SuiteReport {
+    completed: boolean;
+    success: boolean;
+    runtime: number;
     name: string;
     tests: TestReport[];
     childSuites: ChildSuite[];
   }
 
-  interface SuiteReport {
-    status: string | null | undefined;
+  interface ChildSuite {
     name: string;
+    success: boolean;
+    runtime: number;
     tests: TestReport[];
     childSuites: ChildSuite[];
   }
 
   interface TestReport {
-    suiteName: string | null | undefined;
+    testId: string;
+    suiteName: string;
     name: string;
-    status: string;
+    success: boolean;
+    runtime: number;
     assertions: AssertionReport[];
   }
 
   interface AssertionReport {
     message: string;
-    passed: boolean;
+    success: boolean;
+    stack: string | undefined;
+    todo: boolean;
   }
 
-  interface RunEndDetails {
-    name: string | null | undefined;
-    status: string;
-    childSuites: ChildSuite[];
+  interface ModuleDone extends QUnit.ModuleDoneDetails {
+    success: boolean;
     tests: TestReport[];
+    childSuites: ChildSuite[];
+  }
+
+  interface TestDone extends QUnit.TestDoneDetails {
+    testId: string;
+    success: boolean;
+    source: string;
+    assertions: AssertionDone[];
+  }
+
+  interface AssertionDone extends QUnit.LogDetails {
+    todo: boolean;
   }
 
   type ServiceOption =

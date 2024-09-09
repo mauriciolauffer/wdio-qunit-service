@@ -5,7 +5,7 @@ import { join } from "node:path";
 import { URL } from "node:url";
 import logger from "@wdio/logger";
 import { getDirname } from "cross-dirname";
-import getQUnitReportResults from "./qunit-browser.js";
+import { injectQUnitReport, getQUnitSuiteReport } from "./qunit-browser.js";
 
 const log = logger("wdio-qunit-service");
 
@@ -51,17 +51,30 @@ function getQUnitHtmlFiles(paths: string[], baseUrl?: string): string[] {
 /**
  * Use QUnit events to get test results when QUnit run has ended
  */
-function qunitHooks(
+async function getQunitResultsFromBrowser(
   browserInstance: WebdriverIO.Browser,
-): Promise<WdioQunitService.RunEndDetails> {
+): Promise<WdioQunitService.SuiteReport> {
   log.debug("Waiting for QUnit...");
-  return browserInstance.executeAsync(getQUnitReportResults);
+  try {
+    await browserInstance.waitUntil(() => {
+      return browserInstance.execute(
+        () => window?._wdioQunitService?.suiteReport?.completed,
+      );
+    });
+  } catch (err) {
+    log.error(
+      "Consider increasing the waitforTimeout config in your wdio.conf.js",
+    );
+    log.error("See https://webdriver.io/docs/timeouts/#waitfor-timeout");
+    throw err;
+  }
+  return browserInstance.executeAsync(getQUnitSuiteReport);
 }
 
 /**
  * Generate test cases from QUnit results
  */
-function generateTestCases(qunitResults: WdioQunitService.RunEndDetails): void {
+function generateTestCases(qunitResults: WdioQunitService.SuiteReport): void {
   log.debug("Generating test cases...");
   convertQunitModules(qunitResults.childSuites);
   if (qunitResults.tests.length > 0) {
@@ -69,14 +82,14 @@ function generateTestCases(qunitResults: WdioQunitService.RunEndDetails): void {
       convertQunitTests(qunitResults.tests);
     });
   }
-  expect(qunitResults?.status).toEqual("passed");
+  expect(qunitResults?.success).toBeTruthy();
 }
 
 /**
  * Convert QUnit Modules into 'describe' blocks
  */
 function convertQunitModules(
-  qunitModules: WdioQunitService.ChildSuite[],
+  qunitModules: WdioQunitService.ChildSuite[] | WdioQunitService.ChildSuite[],
 ): void {
   for (const qunitChildSuite of qunitModules) {
     log.debug(`Creating "describe" ${qunitChildSuite.name}`);
@@ -90,7 +103,9 @@ function convertQunitModules(
 /**
  * Convert QUnit Tests into 'it' blocks
  */
-function convertQunitTests(qunitTests: WdioQunitService.TestReport[]): void {
+function convertQunitTests(
+  qunitTests: WdioQunitService.TestReport[] | WdioQunitService.TestReport[],
+): void {
   for (const qunitTest of qunitTests) {
     log.debug(`Creating "it" ${qunitTest.name}`);
     it(qunitTest.name, () => {
@@ -98,7 +113,7 @@ function convertQunitTests(qunitTests: WdioQunitService.TestReport[]): void {
         log.debug(
           `Creating "expect" ${qunitTest.name} - ${qunitAssertion?.message}`,
         );
-        expect(qunitAssertion?.passed).toEqual(true);
+        expect(qunitAssertion?.success).toEqual(true);
       }
     });
   }
@@ -109,24 +124,28 @@ function convertQunitTests(qunitTests: WdioQunitService.TestReport[]): void {
  */
 async function getQUnitResults(
   this: WebdriverIO.Browser,
-): Promise<WdioQunitService.RunEndDetails> {
+): Promise<WdioQunitService.SuiteReport> {
   log.info("Getting QUnit results...");
-  const qunitResults = await qunitHooks(this);
+  const qunitResults = await getQunitResultsFromBrowser(this);
   generateTestCases(qunitResults);
   return qunitResults;
 }
 
 export default class QUnitService implements Services.ServiceInstance {
-  before(
+  async before(
     capabilities: Capabilities.RequestedMultiremoteCapabilities,
     specs: string[],
     browserInstance: WebdriverIO.Browser,
-  ): void {
+  ): Promise<void> {
     log.debug("Executing before hook...");
     browserInstance.addCommand(
       "getQUnitResults",
       getQUnitResults.bind(browserInstance),
     );
+    const script = await browser.addInitScript(injectQUnitReport);
+    script.on("data", () => {
+      log.warn("QUnit reporter has been injected...");
+    });
   }
 
   beforeSession(config: Omit<WebdriverIO.Config, "capabilities">): void {

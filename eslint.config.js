@@ -1,7 +1,7 @@
 import globals from "globals";
 import config from "eslint-config-mlauffer-nodejs";
 import tseslint from "typescript-eslint";
-import wdioPlugin from "eslint-plugin-wdio";
+import { configs as wdioConfigs } from "eslint-plugin-wdio";
 import mochaPlugin from "eslint-plugin-mocha";
 
 export default tseslint.config(
@@ -22,7 +22,7 @@ export default tseslint.config(
     },
   },
   {
-    ...wdioPlugin.configs["flat/recommended"],
+    ...wdioConfigs["flat/recommended"],
     files: ["examples/**/*.test.*"],
   },
   {
