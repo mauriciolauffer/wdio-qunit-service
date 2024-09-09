@@ -1,8 +1,8 @@
 export const config = {
-  specs: ["./**/*.test.ts", "./**/*.test.js"],
+  specs: ["./**/*.test.ts", "./**/*.test.js", "./**/*.test.cjs"],
   suites: {
-    openui5: ["./openui5-sample-app/**/unit/*.test.js"],
-    "wdio-cjs": ["./wdio-cjs/**/*.test.js"],
+    openui5: ["./openui5-sample-app/**/test/**/*.test.js"],
+    "wdio-cjs": ["./wdio-cjs/**/*.test.cjs"],
     "wdio-esm": ["./wdio-esm/**/*.test.ts"],
     "wdio-features": ["./wdio-features/**/*.test.ts"],
     "qunit-v1.18": ["./qunit-v1.18/**/*.test.ts"],
@@ -14,7 +14,7 @@ export const config = {
     {
       browserName: "chrome",
       "goog:chromeOptions": {
-        args: ["headless", "disable-gpu"],
+        args: ["headless", "disable-gpu", "window-size=1024,768"],
       },
     },
   ],
@@ -22,15 +22,14 @@ export const config = {
   logLevel: "warn",
   framework: "mocha",
   reporters: ["spec"],
+  waitforTimeout: 60000,
 
   services: [
     "qunit",
     [
       "static-server",
       {
-        folders: [
-          { mount: "/", path: "./" }
-        ],
+        folders: [{ mount: "/", path: "./" }],
       },
     ],
   ],

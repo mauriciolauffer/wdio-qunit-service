@@ -7,12 +7,5 @@
   "scripts": {
     "start": "ui5 serve",
     "test": "wdio run ./webapp/test/wdio.conf.js"
-  },
-  "peerDependencies": {
-    "@wdio/cli": "^8.39.1",
-    "@wdio/local-runner": "^8.39.1",
-    "@wdio/mocha-framework": "^8.39.0",
-    "@wdio/spec-reporter": "^8.39.0",
-    "wdio-qunit-service": "^0.2.0"
   }
 }
