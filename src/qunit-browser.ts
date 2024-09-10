@@ -20,11 +20,15 @@ export async function injectQUnitReport(emit: (result: boolean) => void) {
     },
   });
 
+  /**
+   * Create a new custom QUnit Reporter
+   */
   function createQunitReport() {
     const wdioQunitService: WdioQunitService.Reporter = {
       collect: {
         modules: [],
         tests: [],
+        assertions: [],
       },
       suiteReport: {
         completed: false,
@@ -36,6 +40,11 @@ export async function injectQUnitReport(emit: (result: boolean) => void) {
       },
     };
     window._wdioQunitService = wdioQunitService;
+    QUnit.log(function (data) {
+      window._wdioQunitService.collect.assertions.push(
+        data as WdioQunitService.AssertionDone,
+      );
+    });
     QUnit.testDone(function (data) {
       window._wdioQunitService.collect.tests.push(
         data as WdioQunitService.TestDone,
@@ -50,19 +59,24 @@ export async function injectQUnitReport(emit: (result: boolean) => void) {
       const suiteReport = window._wdioQunitService.suiteReport;
       const collectedModules = window._wdioQunitService.collect.modules;
       const collectedTests = window._wdioQunitService.collect.tests;
+      const collectedAssertions = window._wdioQunitService.collect.assertions;
       for (const qModule of collectedModules) {
         const tests = qModule.tests.map((qTest) => {
           const testDone = collectedTests.find(
             (testDone) => qTest.testId === testDone.testId,
           );
-          const assertions = testDone?.assertions.map((assertionDone) => {
-            return {
-              success: assertionDone.result,
-              message: assertionDone.message,
-              todo: !!assertionDone.todo,
-              stack: assertionDone.result ? undefined : testDone.source,
-            };
-          });
+          const assertions = collectedAssertions
+            .filter((ass) => ass.testId === qTest.testId)
+            .map((assertionDone) => {
+              return {
+                success: assertionDone.result,
+                message: assertionDone.message,
+                todo: !!assertionDone.todo,
+                source: assertionDone.source,
+                actual: assertionDone.actual,
+                expected: assertionDone.expected,
+              };
+            });
           return {
             name: qTest.name,
             suiteName: testDone?.module,
@@ -86,6 +100,7 @@ export async function injectQUnitReport(emit: (result: boolean) => void) {
           ];
         }
       }
+      suiteReport.name = window.location.href;
       suiteReport.runtime =
         suiteReport.childSuites.reduce((acc, obj) => acc + obj.runtime, 0) +
         suiteReport.tests.reduce((acc, obj) => acc + obj.runtime, 0);

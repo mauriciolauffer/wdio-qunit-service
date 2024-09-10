@@ -37,6 +37,7 @@ declare module WdioQunitService {
     collect: {
       modules: WdioQunitService.ModuleDone[];
       tests: WdioQunitService.TestDone[];
+      assertions: WdioQunitService.AssertionDone[];
     };
     suiteReport: WdioQunitService.SuiteReport;
   }
@@ -85,10 +86,9 @@ declare module WdioQunitService {
     assertions: AssertionReport[];
   }
 
-  interface AssertionReport {
+  interface AssertionReport extends QUnit.LogDetails {
     message: string;
     success: boolean;
-    stack: string | undefined;
     todo: boolean;
   }
 
@@ -106,6 +106,7 @@ declare module WdioQunitService {
   }
 
   interface AssertionDone extends QUnit.LogDetails {
+    testId: string;
     todo: boolean;
   }
 

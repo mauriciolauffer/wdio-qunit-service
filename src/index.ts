@@ -74,26 +74,32 @@ async function getQunitResultsFromBrowser(
 /**
  * Generate test cases from QUnit results
  */
-function generateTestCases(qunitResults: WdioQunitService.SuiteReport): void {
+async function generateTestCases(
+  qunitResults: WdioQunitService.SuiteReport,
+): Promise<void> {
   log.debug("Generating test cases...");
   convertQunitModules(qunitResults.childSuites);
   if (qunitResults.tests.length > 0) {
-    describe("...", function () {
+    describe("...", function mappingQunitTestsWithoutModule() {
       convertQunitTests(qunitResults.tests);
     });
   }
-  expect(qunitResults?.success).toBeTruthy();
+  describe(`QUnit Reporter ${qunitResults.name}`, function mappingQunitReporter() {
+    it("should pass", async function mappingQunitResultSuccess() {
+      await expect(qunitResults.success).toEqual(true);
+    });
+  });
 }
 
 /**
  * Convert QUnit Modules into 'describe' blocks
  */
 function convertQunitModules(
-  qunitModules: WdioQunitService.ChildSuite[] | WdioQunitService.ChildSuite[],
+  qunitModules: WdioQunitService.ChildSuite[],
 ): void {
   for (const qunitChildSuite of qunitModules) {
     log.debug(`Creating "describe" ${qunitChildSuite.name}`);
-    describe(qunitChildSuite.name || "...", function () {
+    describe(qunitChildSuite.name || "...", function mappingQunitModules() {
       convertQunitTests(qunitChildSuite.tests);
       convertQunitModules(qunitChildSuite.childSuites);
     });
@@ -103,17 +109,22 @@ function convertQunitModules(
 /**
  * Convert QUnit Tests into 'it' blocks
  */
-function convertQunitTests(
-  qunitTests: WdioQunitService.TestReport[] | WdioQunitService.TestReport[],
-): void {
+function convertQunitTests(qunitTests: WdioQunitService.TestReport[]): void {
   for (const qunitTest of qunitTests) {
     log.debug(`Creating "it" ${qunitTest.name}`);
-    it(qunitTest.name, () => {
+    it(qunitTest.name, async function mappingQunitTests() {
       for (const qunitAssertion of qunitTest.assertions) {
         log.debug(
-          `Creating "expect" ${qunitTest.name} - ${qunitAssertion?.message}`,
+          `Creating "expect" ${qunitTest.name}.${qunitAssertion?.message}`,
         );
-        expect(qunitAssertion?.success).toEqual(true);
+        if (!qunitAssertion.success) {
+          log.error(`QUnit Test: ${qunitTest.suiteName}.${qunitTest.name}`);
+          log.error(`Expected: ${qunitAssertion.expected}`);
+          log.error(`Received: ${qunitAssertion.actual}`);
+          log.error(`Message: ${qunitAssertion.message}`);
+          log.error(`Source: ${qunitAssertion.source}`);
+        }
+        await expect(qunitAssertion.actual).toEqual(qunitAssertion.expected);
       }
     });
   }
@@ -127,7 +138,7 @@ async function getQUnitResults(
 ): Promise<WdioQunitService.SuiteReport> {
   log.info("Getting QUnit results...");
   const qunitResults = await getQunitResultsFromBrowser(this);
-  generateTestCases(qunitResults);
+  await generateTestCases(qunitResults);
   return qunitResults;
 }
 
