@@ -1,7 +1,7 @@
 import globals from "globals";
 import config from "eslint-config-mlauffer-nodejs";
 import tseslint from "typescript-eslint";
-import wdioPlugin from "eslint-plugin-wdio";
+import { configs as wdioConfigs } from "eslint-plugin-wdio";
 import mochaPlugin from "eslint-plugin-mocha";
 
 export default tseslint.config(
@@ -13,20 +13,20 @@ export default tseslint.config(
   {
     languageOptions: {
       globals: {
-        ...globals.qunit
+        ...globals.qunit,
       },
     },
     rules: {
       "jsdoc/require-param": "off",
-      "jsdoc/require-returns": "off"
-    }
+      "jsdoc/require-returns": "off",
+    },
   },
   {
-    ...wdioPlugin.configs["flat/recommended"],
+    ...wdioConfigs["flat/recommended"],
     files: ["examples/**/*.test.*"],
   },
   {
     ...mochaPlugin.configs.flat.recommended,
     files: ["examples/**/*.test.*"],
-  }
+  },
 );
