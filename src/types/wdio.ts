@@ -6,7 +6,7 @@ declare global {
     }
   }
 
-  var _WdioQunitServiceHtmlFiles: string[]; // eslint-disable-line no-var
+  var _WdioQunitServiceHtmlFiles: string[]; // eslint-disable-line
   // var _wdioQunitService: WdioQunitService.Reporter; // eslint-disable-line no-var
 
   interface Window {
@@ -86,10 +86,13 @@ declare module WdioQunitService {
     assertions: AssertionReport[];
   }
 
-  interface AssertionReport extends QUnit.LogDetails {
+  interface AssertionReport {
     message: string;
     success: boolean;
     todo: boolean;
+    actual: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+    expected: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+    source: string;
   }
 
   interface ModuleDone extends QUnit.ModuleDoneDetails {

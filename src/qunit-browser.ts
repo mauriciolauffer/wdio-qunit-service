@@ -57,49 +57,8 @@ export async function injectQUnitReport(emit: (result: boolean) => void) {
     });
     QUnit.done(function () {
       const suiteReport = window._wdioQunitService.suiteReport;
-      const collectedModules = window._wdioQunitService.collect.modules;
       const collectedTests = window._wdioQunitService.collect.tests;
-      const collectedAssertions = window._wdioQunitService.collect.assertions;
-      for (const qModule of collectedModules) {
-        const tests = qModule.tests.map((qTest) => {
-          const testDone = collectedTests.find(
-            (testDone) => qTest.testId === testDone.testId,
-          );
-          const assertions = collectedAssertions
-            .filter((ass) => ass.testId === qTest.testId)
-            .map((assertionDone) => {
-              return {
-                success: assertionDone.result,
-                message: assertionDone.message,
-                todo: !!assertionDone.todo,
-                source: assertionDone.source,
-                actual: assertionDone.actual,
-                expected: assertionDone.expected,
-              };
-            });
-          return {
-            name: qTest.name,
-            suiteName: testDone?.module,
-            success: testDone?.failed === 0,
-            runtime: testDone?.runtime,
-            assertions: assertions,
-          };
-        });
-        if (qModule.name) {
-          suiteReport.childSuites.push({
-            childSuites: [],
-            name: qModule.name,
-            success: qModule.failed === 0,
-            runtime: qModule.runtime,
-            tests: tests as WdioQunitService.TestReport[],
-          });
-        } else {
-          suiteReport.tests = [
-            ...suiteReport.tests,
-            ...(tests as WdioQunitService.TestReport[]),
-          ];
-        }
-      }
+      buildModules();
       suiteReport.name = window.location.href;
       suiteReport.runtime =
         suiteReport.childSuites.reduce((acc, obj) => acc + obj.runtime, 0) +
@@ -108,6 +67,72 @@ export async function injectQUnitReport(emit: (result: boolean) => void) {
         collectedTests.filter((test) => test.failed > 0).length === 0;
       suiteReport.completed = true;
     });
+  }
+
+  /**
+   * Build modules for WDIO QUnit Reporter
+   */
+  function buildModules(): void {
+    const suiteReport = window._wdioQunitService.suiteReport;
+    const collectedModules = window._wdioQunitService.collect.modules;
+    for (const qModule of collectedModules) {
+      const tests = buildTests(qModule.tests);
+      if (qModule.name) {
+        suiteReport.childSuites.push({
+          childSuites: [],
+          name: qModule.name,
+          success: qModule.failed === 0,
+          runtime: qModule.runtime,
+          tests: tests,
+        });
+      } else {
+        suiteReport.tests = [...suiteReport.tests, ...tests];
+      }
+    }
+  }
+
+  /**
+   * Build tests for WDIO QUnit Reporter
+   */
+  function buildTests(
+    qModuleTests: WdioQunitService.TestReport[],
+  ): WdioQunitService.TestReport[] {
+    const collectedTests = window._wdioQunitService.collect.tests;
+    return qModuleTests.map((qTest) => {
+      const testDone = collectedTests.find(
+        (testDone) => qTest.testId === testDone.testId,
+      );
+      const assertions = buildAssertions(qTest);
+      return {
+        name: qTest.name,
+        testId: qTest.testId,
+        suiteName: testDone?.module || "",
+        success: testDone?.failed === 0,
+        runtime: testDone?.runtime || 0,
+        assertions: assertions,
+      };
+    });
+  }
+
+  /**
+   * Build assertions for WDIO QUnit Reporter
+   */
+  function buildAssertions(
+    qTest: WdioQunitService.TestReport,
+  ): WdioQunitService.AssertionReport[] {
+    const collectedAssertions = window._wdioQunitService.collect.assertions;
+    return collectedAssertions
+      .filter((assertionDone) => qTest.testId === assertionDone.testId)
+      .map((assertionDone) => {
+        return {
+          success: assertionDone.result,
+          message: assertionDone.message,
+          todo: !!assertionDone.todo,
+          source: assertionDone.source,
+          actual: assertionDone.actual,
+          expected: assertionDone.expected,
+        };
+      });
   }
 }
 
