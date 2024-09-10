@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/mauriciolauffer/wdio-qunit-service/compare/v0.2.0...v0.3.0) (2024-09-10)
+
+
+### Features
+
+* Support QUnit v1 ([#20](https://github.com/mauriciolauffer/wdio-qunit-service/issues/20)) ([082e425](https://github.com/mauriciolauffer/wdio-qunit-service/commit/082e425c123ab27e9a4f3e4a4743e950d380c9b0))
+
 ## [0.2.0](https://github.com/mauriciolauffer/wdio-qunit-service/compare/v0.1.2...v0.2.0) (2024-06-14)
 
 
