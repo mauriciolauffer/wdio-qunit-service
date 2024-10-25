@@ -6,6 +6,6 @@ describe("QUnit test page", function () {
 
     await browser.getQUnitResults();
     const coverage = await browser.getCoverageReport();
-    expect(coverage?.statements.covered).toBeGreaterThan(0);
+    expect(coverage?.statements?.covered).toBeGreaterThan(0);
   });
 });

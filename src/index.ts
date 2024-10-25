@@ -6,6 +6,7 @@ import { URL } from "node:url";
 import logger from "@wdio/logger";
 import { getDirname } from "cross-dirname";
 import { injectQUnitReport, getQUnitSuiteReport } from "./qunit-browser.js";
+import sharedContext from "./sharedContext.js";
 
 const log = logger("wdio-qunit-service");
 
@@ -55,28 +56,24 @@ async function getQunitResultsFromBrowser(
   browserInstance: WebdriverIO.Browser,
 ): Promise<WdioQunitService.SuiteReport> {
   log.debug("Waiting for QUnit...");
-  try {
-    await browserInstance.waitUntil(() => {
+  await browserInstance.waitUntil(
+    () => {
       return browserInstance.execute(
         () => window?._wdioQunitService?.suiteReport?.completed,
       );
-    });
-  } catch (err) {
-    log.error(
-      "Consider increasing the waitforTimeout config in your wdio.conf.js",
-    );
-    log.error("See https://webdriver.io/docs/timeouts/#waitfor-timeout");
-    throw err;
-  }
-  return browserInstance.executeAsync(getQUnitSuiteReport);
+    },
+    {
+      timeoutMsg:
+        "QUnit took too long to complete. Consider increasing waitforTimeout in wdio.conf.js. See https://webdriver.io/docs/timeouts/#waitfor-timeout",
+    },
+  );
+  return browserInstance.execute(getQUnitSuiteReport);
 }
 
 /**
  * Generate test cases from QUnit results
  */
-async function generateTestCases(
-  qunitResults: WdioQunitService.SuiteReport,
-): Promise<void> {
+function generateTestCases(qunitResults: WdioQunitService.SuiteReport) {
   log.debug("Generating test cases...");
   convertQunitModules(qunitResults.childSuites);
   if (qunitResults.tests.length > 0) {
@@ -140,7 +137,7 @@ async function getQUnitResults(
 ): Promise<WdioQunitService.SuiteReport> {
   log.info("Getting QUnit results...");
   const qunitResults = await getQunitResultsFromBrowser(this);
-  await generateTestCases(qunitResults);
+  generateTestCases(qunitResults);
   return qunitResults;
 }
 
@@ -163,13 +160,13 @@ export default class QUnitService implements Services.ServiceInstance {
 
   beforeSession(config: Omit<WebdriverIO.Config, "capabilities">): void {
     log.debug("Executing beforeSession hook...");
-    const serviceConfig = getServiceConfig(config?.services || []);
+    const serviceConfig = getServiceConfig(config?.services ?? []);
     const files = getQUnitHtmlFiles(
-      serviceConfig?.paths || [],
+      serviceConfig?.paths ?? [],
       config?.baseUrl,
     );
     if (files.length > 0) {
-      globalThis._WdioQunitServiceHtmlFiles = files;
+      sharedContext.qunitHtmlFiles = files;
     }
   }
 }
@@ -179,7 +176,7 @@ class CustomLauncher implements Services.ServiceInstance {
     log.debug("Executing onPrepare launcher...");
     const serviceConfig = getServiceConfig(config?.services);
     const files = getQUnitHtmlFiles(
-      serviceConfig?.paths || [],
+      serviceConfig?.paths ?? [],
       config?.baseUrl,
     );
     if (files.length > 0) {

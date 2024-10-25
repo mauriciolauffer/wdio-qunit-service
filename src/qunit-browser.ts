@@ -3,22 +3,24 @@ import type WdioQunitService from "./types/wdio";
 /**
  * Called by WDIO browser.addInitScript to inject custom QUnit Reporter
  */
-export async function injectQUnitReport(emit: (result: boolean) => void) {
-  let value: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-  Object.defineProperty(window, "QUnit", {
-    configurable: true,
-    enumerable: true,
-    get() {
-      return value;
-    },
-    set(newValue) {
-      if (newValue !== value) {
-        value = newValue;
-        createQunitReport();
-      }
-      emit(true);
-    },
-  });
+export function injectQUnitReport(emit: (result: boolean) => void) {
+  if (!window.QUnit) {
+    let value: null | QUnit = null;
+    Object.defineProperty(window, "QUnit", {
+      configurable: true,
+      enumerable: true,
+      get() {
+        return value;
+      },
+      set(newValue: QUnit) {
+        if (newValue !== value) {
+          value = newValue;
+          createQunitReport();
+        }
+        emit(true);
+      },
+    });
+  }
 
   /**
    * Create a new custom QUnit Reporter
@@ -106,9 +108,9 @@ export async function injectQUnitReport(emit: (result: boolean) => void) {
       return {
         name: qTest.name,
         testId: qTest.testId,
-        suiteName: testDone?.module || "",
+        suiteName: testDone?.module ?? "",
         success: testDone?.failed === 0,
-        runtime: testDone?.runtime || 0,
+        runtime: testDone?.runtime ?? 0,
         assertions: assertions,
       };
     });
@@ -139,8 +141,6 @@ export async function injectQUnitReport(emit: (result: boolean) => void) {
 /**
  * Called by WDIO browser.execute to get the custom QUnit Reporter results
  */
-export async function getQUnitSuiteReport(
-  done: (result: WdioQunitService.SuiteReport) => void,
-) {
-  done(window._wdioQunitService.suiteReport);
+export function getQUnitSuiteReport(): WdioQunitService.SuiteReport {
+  return window._wdioQunitService.suiteReport;
 }
