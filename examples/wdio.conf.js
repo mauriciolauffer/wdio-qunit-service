@@ -22,7 +22,7 @@ export const config = {
   logLevel: "warn",
   framework: "mocha",
   reporters: ["spec"],
-  waitforTimeout: 60000,
+  waitforTimeout: 120000,
 
   services: [
     "qunit",

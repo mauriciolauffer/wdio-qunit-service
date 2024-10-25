@@ -6,9 +6,6 @@ declare global {
     }
   }
 
-  var _WdioQunitServiceHtmlFiles: string[]; // eslint-disable-line
-  // var _wdioQunitService: WdioQunitService.Reporter; // eslint-disable-line no-var
-
   interface Window {
     QUnit: QUnit | null | object;
     _wdioQunitService: WdioQunitService.Reporter;
@@ -24,7 +21,7 @@ declare global {
 }
 
 // eslint-disable-next-line
-declare module WdioQunitService {
+declare namespace WdioQunitService {
   interface ExtendedConfig extends Config {
     started: number;
     stats: Stats;
@@ -118,6 +115,10 @@ declare module WdioQunitService {
     | {
         paths?: string[];
       };
+
+  type SharedContext = {
+    qunitHtmlFiles: string[];
+  };
 }
 
 export default WdioQunitService;
