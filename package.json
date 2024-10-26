@@ -6,6 +6,7 @@
   "license": "MIT",
   "homepage": "https://github.com/mauriciolauffer/wdio-qunit-service#readme",
   "type": "module",
+  "packageManager": "pnpm@9.12.2",
   "main": "./dist/esm/index.js",
   "types": "./dist/esm/index.d.ts",
   "exports": {
@@ -26,7 +27,7 @@
     "qunit"
   ],
   "scripts": {
-    "build": "npm run build:esm && npm run build:cjs",
+    "build": "pnpm run build:esm && pnpm run build:cjs",
     "build:esm": "tsc --p tsconfig.esm.json",
     "build:cjs": "tsc --p tsconfig.cjs.json",
     "test": "wdio run examples/wdio.conf.js --suite wdio-esm --suite wdio-cjs --suite qunit-v1.18 --suite qunit-v1.23 --suite qunit-v2.3 --suite qunit-v2.10",
@@ -68,5 +69,8 @@
   },
   "bugs": {
     "url": "https://github.com/mauriciolauffer/wdio-qunit-service/issues"
+  },
+  "engines": {
+    "pnpm": ">=9"
   }
 }
