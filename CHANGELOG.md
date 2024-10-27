@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.0.0](https://github.com/mauriciolauffer/wdio-qunit-service/compare/v0.3.0...v1.0.0) (2024-10-27)
+
+
+### ⚠ BREAKING CHANGES
+
+* PNPM
+
+### Features
+
+* PNPM ([4d1a2d4](https://github.com/mauriciolauffer/wdio-qunit-service/commit/4d1a2d463ebcebb9a06550ba8ed15a1f3c2cc075))
+
+
+### Bug Fixes
+
+* import sharedContext.js ([446a8b7](https://github.com/mauriciolauffer/wdio-qunit-service/commit/446a8b7e0e6c623245c0a056d41571ea8cee8d4a))
+
 ## [0.3.0](https://github.com/mauriciolauffer/wdio-qunit-service/compare/v0.2.0...v0.3.0) (2024-09-10)
 
 
