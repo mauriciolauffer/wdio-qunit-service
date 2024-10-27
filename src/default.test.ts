@@ -1,5 +1,5 @@
 import { browser } from "@wdio/globals";
-import sharedContext from "./sharedContext";
+import sharedContext from "./sharedContext.js";
 
 sharedContext.qunitHtmlFiles.forEach((path) => {
   describe(`No spec found, including - ${path} - from config`, function () {
