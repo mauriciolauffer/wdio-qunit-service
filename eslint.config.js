@@ -4,6 +4,8 @@ import tseslint from "typescript-eslint";
 import { configs as wdioConfigs } from "eslint-plugin-wdio";
 import mochaPlugin from "eslint-plugin-mocha";
 
+config.splice(2, 1); // Remove SonarJS
+
 export default tseslint.config(
   {
     ignores: ["dist/", "examples/openui5-sample-app/", "**/coverage/"],
