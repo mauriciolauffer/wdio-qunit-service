@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/mauriciolauffer/wdio-qunit-service/compare/v1.0.0...v1.0.1) (2024-11-22)
+
+
+### Bug Fixes
+
+* QUnit actual/expected with array values ([#25](https://github.com/mauriciolauffer/wdio-qunit-service/issues/25)) ([de3da8e](https://github.com/mauriciolauffer/wdio-qunit-service/commit/de3da8ea42a16839cd285cd988d2f41688815f0a))
+
 ## [1.0.0](https://github.com/mauriciolauffer/wdio-qunit-service/compare/v0.3.0...v1.0.0) (2024-10-27)
 
 
