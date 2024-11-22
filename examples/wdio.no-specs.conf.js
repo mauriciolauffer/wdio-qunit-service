@@ -2,6 +2,7 @@ export const config = {
   capabilities: [
     {
       browserName: "chrome",
+      browserVersion: "stable",
       "goog:chromeOptions": {
         args: ["headless", "disable-gpu", "window-size=1024,768"],
       },
@@ -23,7 +24,7 @@ export const config = {
           "examples/qunit-v1.23/qunit-all.html",
           "examples/qunit-v2.3/qunit-all.html",
           "examples/qunit-v2.10/qunit-all.html",
-          "https://ui5.sap.com/test-resources/sap/m/demokit/orderbrowser/webapp/test/unit/unitTests.qunit.html",
+          "https://ui5.sap.com/test-resources/sap/m/demokit/cart/webapp/test/unit/unitTests.qunit.html",
         ],
       },
     ],

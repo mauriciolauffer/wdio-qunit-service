@@ -87,8 +87,8 @@ declare namespace WdioQunitService {
     message: string;
     success: boolean;
     todo: boolean;
-    actual: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-    expected: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+    actual: unknown;
+    expected: unknown;
     source: string;
   }
 

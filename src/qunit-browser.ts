@@ -99,7 +99,9 @@ export function injectQUnitReport(emit: (result: boolean) => void) {
   function buildTests(
     qModuleTests: WdioQunitService.TestReport[],
   ): WdioQunitService.TestReport[] {
-    const collectedTests = window._wdioQunitService.collect.tests;
+    const collectedTests = structuredClone(
+      window._wdioQunitService.collect.tests,
+    );
     return qModuleTests.map((qTest) => {
       const testDone = collectedTests.find(
         (testDone) => qTest.testId === testDone.testId,
@@ -122,7 +124,9 @@ export function injectQUnitReport(emit: (result: boolean) => void) {
   function buildAssertions(
     qTest: WdioQunitService.TestReport,
   ): WdioQunitService.AssertionReport[] {
-    const collectedAssertions = window._wdioQunitService.collect.assertions;
+    const collectedAssertions = structuredClone(
+      window._wdioQunitService.collect.assertions,
+    );
     return collectedAssertions
       .filter((assertionDone) => qTest.testId === assertionDone.testId)
       .map((assertionDone) => {
@@ -131,8 +135,8 @@ export function injectQUnitReport(emit: (result: boolean) => void) {
           message: assertionDone.message,
           todo: !!assertionDone.todo,
           source: assertionDone.source,
-          actual: assertionDone.actual,
-          expected: assertionDone.expected,
+          actual: structuredClone(assertionDone.actual),
+          expected: structuredClone(assertionDone.expected),
         };
       });
   }
