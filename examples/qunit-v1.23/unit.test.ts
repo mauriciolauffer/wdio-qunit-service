@@ -40,4 +40,11 @@ describe("QUnit test page", function () {
     );
     await browser.getQUnitResults();
   });
+
+  it("should pass QUnit assertions - LOCAL", async function () {
+    await browser.url(
+      "http://localhost:4567/examples/qunit-v1.23/qunit-assertions.html",
+    );
+    await browser.getQUnitResults();
+  });
 });
