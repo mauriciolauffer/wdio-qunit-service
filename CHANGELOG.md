@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/mauriciolauffer/wdio-qunit-service/compare/v1.0.1...v1.1.0) (2024-12-02)
+
+
+### Features
+
+* Add support to QUnit.test.skip ([#27](https://github.com/mauriciolauffer/wdio-qunit-service/issues/27)) ([c7e4019](https://github.com/mauriciolauffer/wdio-qunit-service/commit/c7e40193084990756ebca3eaf3230b2dc8e6c709))
+
 ## [1.0.1](https://github.com/mauriciolauffer/wdio-qunit-service/compare/v1.0.0...v1.0.1) (2024-11-22)
 
 
