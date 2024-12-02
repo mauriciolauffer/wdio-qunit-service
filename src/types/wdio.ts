@@ -79,6 +79,7 @@ declare namespace WdioQunitService {
     suiteName: string;
     name: string;
     success: boolean;
+    skipped: boolean;
     runtime: number;
     assertions: AssertionReport[];
   }
@@ -101,6 +102,7 @@ declare namespace WdioQunitService {
   interface TestDone extends QUnit.TestDoneDetails {
     testId: string;
     success: boolean;
+    skipped: boolean;
     source: string;
     assertions: AssertionDone[];
   }

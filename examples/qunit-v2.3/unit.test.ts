@@ -27,7 +27,7 @@ describe("QUnit test page", function () {
     await browser.getQUnitResults();
   });
 
-  it("should pass QUnit tests all together now - LOCAL", async function () {
+  it.skip("should pass QUnit tests all together now - LOCAL", async function () {
     await browser.url(
       "http://localhost:4567/examples/qunit-v2.3/qunit-all.html",
     );
@@ -37,6 +37,13 @@ describe("QUnit test page", function () {
   it("should pass QUnit tests tag - LOCAL", async function () {
     await browser.url(
       "http://localhost:4567/examples/qunit-v2.3/qunit-tag.html",
+    );
+    await browser.getQUnitResults();
+  });
+
+  it("should pass QUnit assertions - LOCAL", async function () {
+    await browser.url(
+      "http://localhost:4567/examples/qunit-v2.3/qunit-assertions.html",
     );
     await browser.getQUnitResults();
   });

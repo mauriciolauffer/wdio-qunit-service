@@ -109,23 +109,30 @@ function convertQunitModules(
 function convertQunitTests(qunitTests: WdioQunitService.TestReport[]): void {
   for (const qunitTest of qunitTests) {
     log.debug(`Creating "it" ${qunitTest.name}`);
-    it(qunitTest.name, async function mappingQunitTests() {
-      for (const qunitAssertion of qunitTest.assertions) {
-        log.debug(
-          `Creating "expect" ${qunitTest.name}.${qunitAssertion?.message}`,
-        );
-        if (qunitAssertion.success) {
+    if (qunitTest.skipped) {
+      it.skip(qunitTest.name, function mappingQunitTestsSkipped() {
+        log.debug(`Skipping ${qunitTest.name}`);
+      });
+    } else {
+      it(qunitTest.name, async function mappingQunitTests() {
+        for (const qunitAssertion of qunitTest.assertions) {
+          log.debug(
+            `Creating "expect" ${qunitTest.name}.${qunitAssertion?.message}`,
+          );
           await expect(qunitAssertion.success).toEqual(true);
-        } else {
-          log.error(`QUnit Test: ${qunitTest.suiteName}.${qunitTest.name}`);
-          log.error(`Expected: ${qunitAssertion.expected}`);
-          log.error(`Received: ${qunitAssertion.actual}`);
-          log.error(`Message: ${qunitAssertion.message}`);
-          log.error(`Source: ${qunitAssertion.source}`);
-          await expect(qunitAssertion.actual).toEqual(qunitAssertion.expected);
+          if (!qunitAssertion.success) {
+            log.error(`QUnit Test: ${qunitTest.suiteName}.${qunitTest.name}`);
+            log.error(`Expected: ${qunitAssertion.expected}`);
+            log.error(`Received: ${qunitAssertion.actual}`);
+            log.error(`Message: ${qunitAssertion.message}`);
+            log.error(`Source: ${qunitAssertion.source}`);
+            await expect(qunitAssertion.actual).toEqual(
+              qunitAssertion.expected,
+            );
+          }
         }
-      }
-    });
+      });
+    }
   }
 }
 

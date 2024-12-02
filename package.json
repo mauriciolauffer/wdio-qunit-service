@@ -42,22 +42,23 @@
     "cross-dirname": "^0.1.0"
   },
   "devDependencies": {
-    "@types/node": "^22.9.1",
+    "@types/node": "^22.10.1",
     "@types/qunit": "^2.19.12",
-    "@wdio/devtools-service": "^8.40.2",
     "@wdio/spec-reporter": "^9.2.14",
     "@wdio/static-server-service": "^9.2.2",
     "@wdio/types": "^9.2.2",
-    "eslint": "^9.15.0",
+    "eslint": "^9.16.0",
     "eslint-config-mlauffer-nodejs": "^3.0.0",
     "eslint-plugin-mocha": "^10.5.0",
     "eslint-plugin-wdio": "^9.2.11",
     "globals": "^15.12.0",
-    "prettier": "^3.3.3",
+    "prettier": "^3.4.1",
+    "puppeteer-core": "^23.9.0",
     "ts-node": "^10.9.2",
     "tsx": "^4.19.2",
-    "typescript-eslint": "^8.15.0",
-    "vitest": "^2.1.5"
+    "typescript-eslint": "^8.16.0",
+    "vitest": "^2.1.6",
+    "wdio-monocart-service": "^1.0.2"
   },
   "peerDependencies": {
     "@wdio/cli": "^9",

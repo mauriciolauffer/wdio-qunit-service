@@ -12,7 +12,8 @@ export const config = {
     "qunit-v1.18": ["./qunit-v1.18/**/*.test.ts"],
     "qunit-v1.23": ["./qunit-v1.23/**/*.test.ts"],
     "qunit-v2.3": ["./qunit-v2.3/**/*.test.ts"],
-    "qunit-v2.10": ["./qunit-v2.10/**/*.test.ts"],
+    "qunit-v2.22": ["./qunit-v2.22/**/*.test.ts"],
+    "qunit-fail": ["./qunit-fail/unit.test.ts"],
     ui5: [
       "./ui5-1.96/**/*.test.js",
       "./ui5-1.108/**/*.test.cjs",
@@ -26,7 +27,7 @@ export const config = {
       "./qunit-v1.18/**/*.test.ts",
       "./qunit-v1.23/**/*.test.ts",
       "./qunit-v2.3/**/*.test.ts",
-      "./qunit-v2.10/**/*.test.ts",
+      "./qunit-v2.22/**/*.test.ts",
     ],
   },
   capabilities: [

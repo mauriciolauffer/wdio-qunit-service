@@ -23,7 +23,7 @@ export const config = {
           "examples/qunit-v1.18/qunit-all.html",
           "examples/qunit-v1.23/qunit-all.html",
           "examples/qunit-v2.3/qunit-all.html",
-          "examples/qunit-v2.10/qunit-all.html",
+          "examples/qunit-v2.22/qunit-all.html",
           "https://ui5.sap.com/test-resources/sap/m/demokit/cart/webapp/test/unit/unitTests.qunit.html",
         ],
       },

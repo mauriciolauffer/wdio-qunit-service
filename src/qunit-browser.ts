@@ -112,6 +112,7 @@ export function injectQUnitReport(emit: (result: boolean) => void) {
         testId: qTest.testId,
         suiteName: testDone?.module ?? "",
         success: testDone?.failed === 0,
+        skipped: !!testDone?.skipped,
         runtime: testDone?.runtime ?? 0,
         assertions: assertions,
       };
