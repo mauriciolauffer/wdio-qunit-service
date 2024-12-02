@@ -91,6 +91,7 @@ declare namespace WdioQunitService {
     actual: unknown;
     expected: unknown;
     source: string;
+    negative: boolean;
   }
 
   interface ModuleDone extends QUnit.ModuleDoneDetails {
@@ -110,6 +111,7 @@ declare namespace WdioQunitService {
   interface AssertionDone extends QUnit.LogDetails {
     testId: string;
     todo: boolean;
+    negative: boolean;
   }
 
   type ServiceOption =

@@ -119,17 +119,23 @@ function convertQunitTests(qunitTests: WdioQunitService.TestReport[]): void {
           log.debug(
             `Creating "expect" ${qunitTest.name}.${qunitAssertion?.message}`,
           );
-          await expect(qunitAssertion.success).toEqual(true);
           if (!qunitAssertion.success) {
             log.error(`QUnit Test: ${qunitTest.suiteName}.${qunitTest.name}`);
             log.error(`Expected: ${qunitAssertion.expected}`);
             log.error(`Received: ${qunitAssertion.actual}`);
             log.error(`Message: ${qunitAssertion.message}`);
             log.error(`Source: ${qunitAssertion.source}`);
-            await expect(qunitAssertion.actual).toEqual(
-              qunitAssertion.expected,
-            );
+            if (qunitAssertion.negative) {
+              await expect(qunitAssertion.actual).not.toEqual(
+                qunitAssertion.expected,
+              );
+            } else {
+              await expect(qunitAssertion.actual).toEqual(
+                qunitAssertion.expected,
+              );
+            }
           }
+          await expect(qunitAssertion.success).toEqual(true); // It also works as a failsafe to catch-all
         }
       });
     }

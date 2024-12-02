@@ -138,6 +138,7 @@ export function injectQUnitReport(emit: (result: boolean) => void) {
           source: assertionDone.source,
           actual: structuredClone(assertionDone.actual),
           expected: structuredClone(assertionDone.expected),
+          negative: !!assertionDone.negative,
         };
       });
   }
