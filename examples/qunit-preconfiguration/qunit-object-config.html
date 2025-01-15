@@ -1,0 +1,21 @@
+<html>
+  <head>
+    <title>QUnit Tests</title>
+    <link rel="stylesheet" href="//code.jquery.com/qunit/qunit-2.22.0.css" />
+  </head>
+  <body>
+    <div id="qunit"></div>
+    <div id="qunit-fixture"></div>
+    <script>
+      window.QUnit = {};
+      QUnit.config = {
+        altertitle: false,
+        seed: "d84af39036",
+        testTimeout: 1000,
+      };
+      QUnit.config.autostart = false;
+    </script>
+    <script src="//code.jquery.com/qunit/qunit-2.22.0.js"></script>
+    <script defer src="../fixtures/qunit-preconfiguration.js"></script>
+  </body>
+</html>
