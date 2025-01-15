@@ -166,8 +166,8 @@ export default class QUnitService implements Services.ServiceInstance {
       getQUnitResults.bind(browserInstance),
     );
     const script = await browser.addInitScript(injectQUnitReport);
-    script.on("data", () => {
-      log.warn("QUnit reporter has been injected...");
+    script.on("data", (href: string) => {
+      log.warn("QUnit reporter injected at", href);
     });
   }
 
