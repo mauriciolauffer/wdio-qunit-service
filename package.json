@@ -34,8 +34,8 @@
     "test:ui5": "wdio run examples/wdio.conf.js --suite ui5",
     "test:qunit": "wdio run examples/wdio.conf.js --suite qunit",
     "test:no:specs": "wdio run examples/wdio.no-specs.conf.js",
-    "test:ui5:app:v04": "wdio run examples/openui5-sample-app-v0.4/webapp/test/wdio.conf.js",
-    "test:ui5:app:v05": "wdio run examples/openui5-sample-app-v0.5/webapp/test/wdio.conf.js",
+    "test:ui5:app": "wdio run examples/openui5-sample-app/webapp/test/wdio.conf.js",
+    "test:ui5:app:nospecs": "wdio run examples/openui5-sample-app-no-specs/webapp/test/wdio.conf.js",
     "lint": "prettier . --check --cache && eslint --cache",
     "lint:ci": "eslint --quiet -f @microsoft/eslint-formatter-sarif -o eslint.sarif",
     "pretty": "prettier . --write --cache"

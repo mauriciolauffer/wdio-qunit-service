@@ -1,3 +1,5 @@
+const { browser } = require("@wdio/globals"); // eslint-disable-line @typescript-eslint/no-require-imports
+
 describe("QUnit test page", function () {
   it("should pass QUnit tests - REMOTE", async function () {
     await browser.url(

@@ -1,37 +1,28 @@
 export const config = {
   specs: ["./**/*.test.ts", "./**/*.test.js", "./**/*.test.cjs"],
+
   suites: {
-    "ui5-local": ["./openui5-sample-app/**/test/**/*.test.js"],
     "ui5-1.96": ["./ui5-1.96/**/*.test.js"],
-    "ui5-1.108": ["./ui5-1.108/**/*.test.cjs"],
+    "ui5-1.108": ["./ui5-1.108/**/*.test.js"],
     "ui5-1.120": ["./ui5-1.120/**/*.test.js"],
-    "ui5-latest": ["./ui5-latest/**/*.test.ts"],
+    "ui5-latest": ["./ui5-latest/**/*.test.js"],
     "wdio-cjs": ["./wdio-cjs/**/*.test.cjs"],
-    "wdio-esm": ["./wdio-esm/**/*.test.ts"],
+    "wdio-esm": ["./wdio-esm/**/*.test.js"],
     "wdio-features": ["./wdio-features/**/*.test.ts"],
     "qunit-v1.18": ["./qunit-v1.18/**/*.test.ts"],
     "qunit-v1.23": ["./qunit-v1.23/**/*.test.ts"],
     "qunit-v2.3": ["./qunit-v2.3/**/*.test.ts"],
     "qunit-v2.22": ["./qunit-v2.22/**/*.test.ts"],
-    "qunit-fail": ["./qunit-fail/unit.test.ts"],
     "qunit-preconfig": ["./qunit-preconfiguration/unit.test.ts"],
+    "qunit-fail": ["./qunit-fail/unit.test.ts"],
     ui5: [
-      "./ui5-1.96/**/*.test.js",
-      "./ui5-1.108/**/*.test.cjs",
-      "./ui5-1.120/**/*.test.js",
-      "./ui5-latest/**/*.test.ts",
-      "./wdio-cjs/**/*.test.cjs",
-      "./wdio-esm/**/*.test.ts",
-      "./wdio-features/**/*.test.ts",
+      "./ui5-*/**/*.test.js",
+      "./wdio-*/**/*.test.js",
+      "./wdio-*/**/*.test.cjs",
     ],
-    qunit: [
-      "./qunit-v1.18/**/*.test.ts",
-      "./qunit-v1.23/**/*.test.ts",
-      "./qunit-v2.3/**/*.test.ts",
-      "./qunit-v2.22/**/*.test.ts",
-      "./qunit-preconfiguration/unit.test.ts",
-    ],
+    qunit: ["./qunit-v*/**/*.test.ts", "./qunit-preconfiguration/*.test.ts"],
   },
+
   capabilities: [
     {
       browserName: "chrome",
@@ -56,6 +47,7 @@ export const config = {
       },
     ],
   ],
+
   mochaOpts: {
     ui: "bdd",
     timeout: 120000,

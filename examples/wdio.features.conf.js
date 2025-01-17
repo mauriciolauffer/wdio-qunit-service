@@ -1,5 +1,5 @@
 export const config = {
-  specs: ["./**/wdio-features/*.test.js"],
+  specs: ["./**/wdio-features/*.test.ts"],
   capabilities: [
     {
       browserName: "chrome",

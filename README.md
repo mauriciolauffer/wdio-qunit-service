@@ -12,7 +12,7 @@ If you want to keep your QUnit tests as they are, with no rewriting and no refac
 
 Because of that, developers can use `QUnit Service` in tandem with everything else available in the `wdio` ecosystem.
 
-Want to record the test run in a [video](https://webdriver.io/docs/wdio-video-reporter/)? Perhaps take a [screenshot](https://webdriver.io/docs/api/browser/saveScreenshot/) or save it in [PDF](https://webdriver.io/docs/api/browser/savePDF/)? Check the [Code coverage](https://webdriver.io/docs/devtools-service/#capture-code-coverage)? Save the test results in [JUnit](https://webdriver.io/docs/junit-reporter) format? Go for it, `QUnit Service` doesn't get on your way.
+Want to record the test run in a [video](https://webdriver.io/docs/wdio-video-reporter/)? Perhaps take a [screenshot](https://webdriver.io/docs/api/browser/saveScreenshot/) or save it in [PDF](https://webdriver.io/docs/api/browser/savePDF/)? Check the [Code coverage](https://www.npmjs.com/package/wdio-monocart-service)? Save the test results in [JUnit](https://webdriver.io/docs/junit-reporter) format? Go for it, `QUnit Service` doesn't get on your way.
 
 ## Installation
 
@@ -90,17 +90,17 @@ Check the [examples](./examples/) folder out for samples using `javascript`, `ty
 
 Straight forward [example](./examples/openui5-sample-app/) using the well known [openui5-sample-app](https://github.com/SAP/openui5-sample-app):
 
-- Create a configuration file: [wdio.conf.js](.examples/openui5-sample-app/webapp/test/wdio.conf.js)
+- Create a configuration file: [wdio.conf.js](./examples/openui5-sample-app/webapp/test/wdio.conf.js)
 
 - Tell `wdio` where to find the QUnit test files:
 
-- - Include the QUnit files to the [service configuration](./examples/vanilla-qunit/wdio.no-specs.conf.js)
+- - Include the QUnit files to the [service configuration](./examples/openui5-sample-app-no-specs/webapp/test/wdio.conf.js)
 - - or
-- - Create a WebdriverIO test file for [unit tests](./examples/openui5-sample-app/webapp/test/unit/unit.test.js) and another for [OPA5 tests](./examples/openui5-sample-app/webapp/test/integration/integration.test.js)
+- - Create a WebdriverIO test file for [unit tests](./examples/openui5-sample-app/webapp/test/unit/unit.test.js) and another for [OPA5 tests](./examples/openui5-sample-app/webapp/test/integration/opa.test.js)
 
 - The web server must be running before executing the tests
 
-- Run it $ `wdio run ./webapp/test/wdio.conf.js`
+- Run it $ `wdio run webapp/test/wdio.conf.js`
 
 ## Author
 

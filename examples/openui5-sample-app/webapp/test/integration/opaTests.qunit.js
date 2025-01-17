@@ -1,11 +1,15 @@
-/* global QUnit */
+sap.ui.define([
+	"sap/ui/test/Opa5",
+	"./arrangements/Startup",
+	"./TodoListJourney",
+	"./SearchJourney",
+	"./FilterJourney"
+], (Opa5, Startup) => {
+	"use strict";
 
-QUnit.config.autostart = false;
+	Opa5.extendConfig({
+		arrangements: new Startup(),
+		autoWait: true
+	});
 
-sap.ui.getCore().attachInit(() => {
-  "use strict";
-
-  sap.ui.require(["sap/ui/demo/todo/test/integration/AllJourneys"], () =>
-    QUnit.start()
-  );
 });

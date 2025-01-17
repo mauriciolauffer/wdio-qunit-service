@@ -1,3 +1,5 @@
+import { browser } from "@wdio/globals";
+
 describe("QUnit test page", function () {
   it("should pass QUnit tests - REMOTE", async function () {
     await browser.url(
