@@ -1,67 +1,62 @@
 /* global QUnit */
 
-sap.ui.define(
-  ["sap/ui/test/opaQunit", "sap/ui/demo/todo/test/integration/pages/App"],
-  (opaTest) => {
-    "use strict";
+sap.ui.define([
+	"sap/ui/test/opaQunit",
+	"./pages/App"
+], (opaTest) => {
+	"use strict";
 
-    QUnit.module("Filter");
+	QUnit.module("Filter");
 
-    opaTest(
-      "should show correct items when filtering for 'Active' items",
-      (Given, When, Then) => {
-        // Arrangements
-        Given.iStartMyApp();
+	opaTest("should show correct items when filtering for 'Active' items", (Given, When, Then) => {
 
-        //Actions
-        When.onTheAppPage.iFilterForItems("active");
+		// Arrangements
+		Given.iStartMyApp();
 
-        // Assertions
-        Then.onTheAppPage.iShouldSeeItemCount(1);
+		//Actions
+		When.onTheAppPage.iFilterForItems("active");
 
-        // Cleanup
-        Then.iTeardownMyApp();
-      }
-    );
+		// Assertions
+		Then.onTheAppPage.iShouldSeeItemCount(1);
 
-    opaTest(
-      "should show correct items when filtering for 'Completed' items",
-      (Given, When, Then) => {
-        // Arrangements
-        Given.iStartMyApp();
+		// Cleanup
+		Then.iTeardownMyApp();
+	});
 
-        //Actions
-        When.onTheAppPage.iFilterForItems("completed");
+	opaTest("should show correct items when filtering for 'Completed' items", (Given, When, Then) => {
 
-        // Assertions
-        Then.onTheAppPage.iShouldSeeItemCount(1);
+		// Arrangements
+		Given.iStartMyApp();
 
-        // Cleanup
-        Then.iTeardownMyApp();
-      }
-    );
+		//Actions
+		When.onTheAppPage.iFilterForItems("completed");
 
-    opaTest(
-      "should show correct items when filtering for 'Completed' items and switch back to 'All'",
-      (Given, When, Then) => {
-        // Arrangements
-        Given.iStartMyApp();
+		// Assertions
+		Then.onTheAppPage.iShouldSeeItemCount(1);
 
-        //Actions
-        When.onTheAppPage.iFilterForItems("completed");
+		// Cleanup
+		Then.iTeardownMyApp();
+	});
 
-        // Assertions
-        Then.onTheAppPage.iShouldSeeItemCount(1);
+	opaTest("should show correct items when filtering for 'Completed' items and switch back to 'All'", (Given, When, Then) => {
 
-        //Actions
-        When.onTheAppPage.iFilterForItems("all");
+		// Arrangements
+		Given.iStartMyApp();
 
-        // Assertions
-        Then.onTheAppPage.iShouldSeeItemCount(2);
+		//Actions
+		When.onTheAppPage.iFilterForItems("completed");
 
-        // Cleanup
-        Then.iTeardownMyApp();
-      }
-    );
-  }
-);
+		// Assertions
+		Then.onTheAppPage.iShouldSeeItemCount(1);
+
+		//Actions
+		When.onTheAppPage.iFilterForItems("all");
+
+		// Assertions
+		Then.onTheAppPage.iShouldSeeItemCount(2);
+
+		// Cleanup
+		Then.iTeardownMyApp();
+	});
+
+});

@@ -25,6 +25,8 @@ export const config = {
           "examples/qunit-v2.3/qunit-all.html",
           "examples/qunit-v2.22/qunit-all.html",
           "https://ui5.sap.com/test-resources/sap/m/demokit/cart/webapp/test/unit/unitTests.qunit.html",
+          "examples/qunit-preconfiguration/qunit-flat-config.html",
+          "examples/qunit-preconfiguration/qunit-object-config.html",
         ],
       },
     ],

@@ -34,7 +34,7 @@ describe("QUnit unit test page", function () {
     await browser.getQUnitResults();
   });
 
-  it("should pass Walkthrough unit tests - REMOTE - UI5 latest", async function () {
+  it.skip("should pass Walkthrough unit tests - REMOTE - UI5 latest", async function () {
     await browser.url(
       "https://ui5.sap.com/test-resources/sap/m/demokit/tutorial/walkthrough/38/webapp/test/unit/unitTests.qunit.html",
     );

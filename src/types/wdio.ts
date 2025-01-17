@@ -7,7 +7,7 @@ declare global {
   }
 
   interface Window {
-    QUnit: QUnit | null | object;
+    QUnit: QUnit | null;
     _wdioQunitService: WdioQunitService.Reporter;
   }
 

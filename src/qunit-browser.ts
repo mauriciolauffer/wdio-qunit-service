@@ -3,9 +3,10 @@ import type WdioQunitService from "./types/wdio";
 /**
  * Called by WDIO browser.addInitScript to inject custom QUnit Reporter
  */
-export function injectQUnitReport(emit: (result: boolean) => void) {
-  if (!window.QUnit) {
-    let value: null | QUnit = null;
+export function injectQUnitReport(emit: (result: string) => void) {
+  // if (!window._wdioQunitService && !window?.QUnit?.log) {
+  if (!window._wdioQunitService) {
+    let value: QUnit | null = null;
     Object.defineProperty(window, "QUnit", {
       configurable: true,
       enumerable: true,
@@ -15,9 +16,12 @@ export function injectQUnitReport(emit: (result: boolean) => void) {
       set(newValue: QUnit) {
         if (newValue !== value) {
           value = newValue;
-          createQunitReport();
+          // @ts-expect-error: QUnit.log may not exist due to QUnit preconfiguration. See https://qunitjs.com/api/config
+          if (value?.log) {
+            createQunitReport();
+            emit(window.location.href);
+          }
         }
-        emit(true);
       },
     });
   }

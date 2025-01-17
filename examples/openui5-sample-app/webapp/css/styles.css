@@ -1,4 +1,4 @@
 /* Strikes through the completed items */
 li[data-todo-item-completed="true"] span {
-  text-decoration: line-through;
+	text-decoration: line-through;
 }
