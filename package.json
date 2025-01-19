@@ -6,6 +6,7 @@
   "license": "MIT",
   "homepage": "https://github.com/mauriciolauffer/wdio-qunit-service#readme",
   "type": "module",
+  "packageManager": "pnpm@9.15.4",
   "main": "./dist/esm/index.js",
   "types": "./dist/esm/index.d.ts",
   "exports": {
