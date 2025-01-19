@@ -1,12 +1,11 @@
 {
   "name": "wdio-qunit-service",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "WebdriverIO service for running QUnit browser-based tests and dinamically converting them to wdio test suites.",
   "author": "Mauricio Lauffer",
   "license": "MIT",
   "homepage": "https://github.com/mauriciolauffer/wdio-qunit-service#readme",
   "type": "module",
-  "packageManager": "pnpm@9.12.2",
   "main": "./dist/esm/index.js",
   "types": "./dist/esm/index.d.ts",
   "exports": {
