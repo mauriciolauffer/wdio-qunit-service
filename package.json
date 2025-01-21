@@ -44,7 +44,7 @@
     "cross-dirname": "^0.1.0"
   },
   "devDependencies": {
-    "@types/node": "^22.10.6",
+    "@types/node": "^22.10.7",
     "@types/qunit": "^2.19.12",
     "@wdio/spec-reporter": "^9.5.0",
     "@wdio/static-server-service": "^9.5.0",
@@ -57,8 +57,8 @@
     "prettier": "^3.4.2",
     "ts-node": "^10.9.2",
     "tsx": "^4.19.2",
-    "typescript-eslint": "^8.20.0",
-    "vitest": "^2.1.8",
+    "typescript-eslint": "^8.21.0",
+    "vitest": "^3.0.2",
     "wdio-monocart-service": "^1.0.2"
   },
   "peerDependencies": {
