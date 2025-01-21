@@ -13,6 +13,7 @@ export const config = {
     "qunit-v1.23": ["./qunit-v1.23/**/*.test.ts"],
     "qunit-v2.3": ["./qunit-v2.3/**/*.test.ts"],
     "qunit-v2.22": ["./qunit-v2.22/**/*.test.ts"],
+    "qunit-iframes": ["./qunit-iframes/unit.test.ts"],
     "qunit-preconfig": ["./qunit-preconfiguration/unit.test.ts"],
     "qunit-fail": ["./qunit-fail/unit.test.ts"],
     ui5: [
@@ -20,7 +21,11 @@ export const config = {
       "./wdio-*/**/*.test.js",
       "./wdio-*/**/*.test.cjs",
     ],
-    qunit: ["./qunit-v*/**/*.test.ts", "./qunit-preconfiguration/*.test.ts"],
+    qunit: [
+      "./qunit-v*/**/*.test.ts",
+      "./qunit-iframes/unit.test.ts",
+      "./qunit-preconfiguration/*.test.ts",
+    ],
   },
 
   capabilities: [

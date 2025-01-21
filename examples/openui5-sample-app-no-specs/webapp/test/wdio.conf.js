@@ -19,9 +19,8 @@ module.exports.config = {
       "qunit",
       {
         paths: [
-          "http://localhost:8080/test/unit/unitTests.qunit.html",
+          "http://localhost:8080/test-resources/sap/ui/qunit/testrunner.html?testpage=/test/testsuite.qunit.html&autostart=true",
           "http://localhost:8080/test/unit/unitTests.qunit-v1.html",
-          "http://localhost:8080/test/integration/opaTests.qunit.html",
           "http://localhost:8080/test/integration/opaTests.qunit-v1.html",
         ],
       },

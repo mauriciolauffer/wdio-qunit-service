@@ -4,7 +4,6 @@ import type WdioQunitService from "./types/wdio";
  * Called by WDIO browser.addInitScript to inject custom QUnit Reporter
  */
 export function injectQUnitReport(emit: (result: string) => void) {
-  // if (!window._wdioQunitService && !window?.QUnit?.log) {
   if (!window._wdioQunitService) {
     let value: QUnit | null = null;
     Object.defineProperty(window, "QUnit", {
@@ -37,6 +36,7 @@ export function injectQUnitReport(emit: (result: string) => void) {
         assertions: [],
       },
       suiteReport: {
+        suiteId: window.crypto.randomUUID(),
         completed: false,
         success: false,
         runtime: 0,
@@ -44,8 +44,18 @@ export function injectQUnitReport(emit: (result: string) => void) {
         tests: [],
         childSuites: [],
       },
+      results: [],
     };
+    wdioQunitService.results = [wdioQunitService.suiteReport];
     window._wdioQunitService = wdioQunitService;
+    setQunitReportParentWindow();
+    setQUnitCallbackEvents();
+  }
+
+  /**
+   * Set QUnit callback events
+   */
+  function setQUnitCallbackEvents() {
     QUnit.log(function (data) {
       window._wdioQunitService.collect.assertions.push(
         data as WdioQunitService.AssertionDone,
@@ -72,6 +82,8 @@ export function injectQUnitReport(emit: (result: string) => void) {
       suiteReport.success =
         collectedTests.filter((test) => test.failed > 0).length === 0;
       suiteReport.completed = true;
+      window._wdioQunitService.results = [suiteReport];
+      setQunitReportParentWindow();
     });
   }
 
@@ -146,11 +158,33 @@ export function injectQUnitReport(emit: (result: string) => void) {
         };
       });
   }
+
+  /**
+   * Set QUnit Reporter at window parent in case of tests running in iframe
+   */
+  function setQunitReportParentWindow() {
+    if (window.self !== window.parent) {
+      const suiteReport = window._wdioQunitService.suiteReport;
+      const parentResults = window.parent?._wdioQunitService?.results;
+      if (parentResults) {
+        const reportIndex = parentResults.findIndex(
+          (result) => result.suiteId === suiteReport.suiteId,
+        );
+        if (reportIndex >= 0) {
+          parentResults[reportIndex] = suiteReport;
+        } else {
+          parentResults.push(suiteReport);
+        }
+      } else {
+        window.parent._wdioQunitService = window._wdioQunitService;
+      }
+    }
+  }
 }
 
 /**
  * Called by WDIO browser.execute to get the custom QUnit Reporter results
  */
-export function getQUnitSuiteReport(): WdioQunitService.SuiteReport {
-  return window._wdioQunitService.suiteReport;
+export function getQUnitSuiteReport(): WdioQunitService.SuiteReport[] {
+  return window._wdioQunitService.results;
 }
