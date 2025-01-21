@@ -37,6 +37,7 @@ declare namespace WdioQunitService {
       assertions: WdioQunitService.AssertionDone[];
     };
     suiteReport: WdioQunitService.SuiteReport;
+    results: WdioQunitService.SuiteReport[];
   }
 
   interface ProcessingQueue {
@@ -58,6 +59,7 @@ declare namespace WdioQunitService {
   }
 
   interface SuiteReport {
+    suiteId: string;
     completed: boolean;
     success: boolean;
     runtime: number;

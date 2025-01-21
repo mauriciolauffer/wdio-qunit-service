@@ -55,12 +55,15 @@ function getQUnitHtmlFiles(paths: string[], baseUrl?: string): string[] {
  */
 async function getQunitResultsFromBrowser(
   browserInstance: WebdriverIO.Browser,
-): Promise<WdioQunitService.SuiteReport> {
+): Promise<WdioQunitService.SuiteReport[]> {
   log.debug("Waiting for QUnit...");
   await browserInstance.waitUntil(
     () => {
       return browserInstance.execute(
-        () => window?._wdioQunitService?.suiteReport?.completed,
+        () =>
+          window?._wdioQunitService?.results?.filter?.(
+            (result) => !result.completed,
+          ).length === 0,
       );
     },
     {
@@ -76,10 +79,12 @@ async function getQunitResultsFromBrowser(
  */
 async function getQUnitResults(
   this: WebdriverIO.Browser,
-): Promise<WdioQunitService.SuiteReport> {
+): Promise<WdioQunitService.SuiteReport[]> {
   log.info("Getting QUnit results...");
   const qunitResults = await getQunitResultsFromBrowser(this);
-  generateTestCases(qunitResults);
+  qunitResults.forEach((result) => {
+    generateTestCases(result);
+  });
   return qunitResults;
 }
 
