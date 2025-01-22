@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/mauriciolauffer/wdio-qunit-service/compare/v1.2.0...v1.3.0) (2025-01-21)
+
+
+### Features
+
+* Add support to QUnit running in iframes ([#34](https://github.com/mauriciolauffer/wdio-qunit-service/issues/34)) ([b8866d8](https://github.com/mauriciolauffer/wdio-qunit-service/commit/b8866d8d716e84d218fe94535e31e58ea079cf19))
+
 ## [1.2.0](https://github.com/mauriciolauffer/wdio-qunit-service/compare/v1.1.0...v1.2.0) (2025-01-17)
 
 
