@@ -1,11 +1,10 @@
 {
   "compilerOptions": {
-    "noEmit": true,
-    "module": "ES2022",
+    "module": "NodeNext",
     "target": "ES2022",
+    "moduleResolution": "nodenext",
     "lib": ["ES2022", "DOM"],
     "strict": true,
-    "moduleResolution": "Node",
     "esModuleInterop": true,
     "isolatedModules": true,
     "resolveJsonModule": true,
@@ -13,11 +12,13 @@
     "sourceMap": true,
     "declaration": true,
     "skipLibCheck": true,
+    "erasableSyntaxOnly": true,
     "types": [
       "node",
       "@wdio/types",
       "@wdio/globals/types",
       "@wdio/mocha-framework",
+      "mocha",
       "qunit"
     ]
   },

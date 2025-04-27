@@ -1,4 +1,4 @@
-import type WdioQunitService from "./types/wdio";
+import type WdioQunitService from "./types/wdio.js";
 import logger from "@wdio/logger";
 
 const log = logger("wdio-qunit-service");

@@ -1,4 +1,4 @@
-import type WdioQunitService from "./types/wdio";
+import type WdioQunitService from "./types/wdio.js";
 
 /**
  * Called by WDIO browser.addInitScript to inject custom QUnit Reporter
