@@ -188,3 +188,11 @@ QUnit.test("Should pass assert.true", (assert) => {
   assert.true?.(true, "boolean true");
   assert.ok(true, "Ensure at least 1 assertion is always present");
 });
+
+QUnit.test("Should NOT fail when assert a function", (assert) => {
+  assert.notEqual(
+    QUnit.test,
+    undefined,
+    "Ensure it does not fail when assert a functions",
+  );
+});

@@ -38,6 +38,7 @@
     "@types/mocha": "^10.0.10",
     "@types/node": "^22.15.2",
     "@types/qunit": "^2.19.12",
+    "@wdio/config": "^9.12.6",
     "@wdio/spec-reporter": "^9.12.6",
     "@wdio/static-server-service": "^9.12.6",
     "@wdio/types": "^9.12.6",

@@ -1,11 +1,17 @@
-export const config = {
+import { defineConfig } from "@wdio/config";
+export const config = defineConfig({
   specs: ["./**/wdio-features/*.test.ts"],
   capabilities: [
     {
       browserName: "chrome",
       browserVersion: "stable",
       "goog:chromeOptions": {
-        args: ["headless", "disable-gpu", "window-size=1024,768", "no-sandbox"],
+        args: [
+          "headless",
+          "disable-gpu",
+          "window-size=1920,1080",
+          "no-sandbox",
+        ],
       },
     },
   ],
@@ -37,4 +43,4 @@ export const config = {
     ui: "bdd",
     timeout: 60000,
   },
-};
+});
