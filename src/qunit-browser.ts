@@ -165,8 +165,8 @@ export function injectQUnitReport(emit: (result: string) => void) {
       .map((assertionDone) => {
         // TODO: review if this is needed.
         // Avoids circular references +++ Maximum call stack size exceeded +++ DataCloneError: Failed to execute 'structuredClone' on 'Window'
-        let actualClone = assertionDone.actual;
-        let expectedClone = assertionDone.expected;
+        let actualClone;
+        let expectedClone;
         try {
           actualClone = structuredClone(assertionDone.actual);
         } catch (err) {

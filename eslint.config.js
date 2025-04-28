@@ -4,15 +4,12 @@ import tseslint from "typescript-eslint";
 import { configs as wdioConfigs } from "eslint-plugin-wdio";
 import mochaPlugin from "eslint-plugin-mocha";
 
-config.splice(2, 1); // Remove SonarJS
-
 export default tseslint.config(
   {
     ignores: ["dist/", "examples/openui5-sample-app*", "**/coverage/"],
   },
-  ...config,
-  ...tseslint.configs.strict,
   {
+    extends: [config, tseslint.configs.strict],
     languageOptions: {
       globals: {
         ...globals.qunit,
@@ -21,14 +18,16 @@ export default tseslint.config(
     rules: {
       "jsdoc/require-param": "off",
       "jsdoc/require-returns": "off",
+      "sonarjs/todo-tag": "warn",
+      "sonarjs/no-skipped-tests": "warn",
     },
   },
   {
-    ...wdioConfigs["flat/recommended"],
     files: ["examples/**/*.test.*"],
+    extends: [wdioConfigs["flat/recommended"]],
   },
   {
-    ...mochaPlugin.configs.flat.recommended,
     files: ["examples/**/*.test.*"],
+    extends: [mochaPlugin.configs.recommended],
   },
 );
