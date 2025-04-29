@@ -1,5 +1,4 @@
-import { defineConfig } from "@wdio/config";
-export const config = defineConfig({
+export const config = {
   specs: [""],
   capabilities: [
     {
@@ -50,4 +49,4 @@ export const config = defineConfig({
     ui: "bdd",
     timeout: 60000,
   },
-});
+};
