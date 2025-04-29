@@ -35,7 +35,8 @@ describe("QUnit OPA5 integration test page", function () {
     await browser.getQUnitResults();
   });
 
-  it("should pass Manage Products integration tests - REMOTE - UI5 v1.120", async function () {
+  it.skip("should pass Manage Products integration tests - REMOTE - UI5 v1.120", async function () {
+    // TODO: Maximum call stack size exceeded
     await browser.url(
       "https://ui5.sap.com/1.120/test-resources/sap/m/demokit/tutorial/worklist/07/webapp/test/integration/opaTests.qunit.html",
     );

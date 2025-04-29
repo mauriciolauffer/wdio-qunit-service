@@ -163,41 +163,13 @@ export function injectQUnitReport(emit: (result: string) => void) {
     return collectedAssertions
       .filter((assertionDone) => qTest.testId === assertionDone.testId)
       .map((assertionDone) => {
-        // TODO: review if this is needed.
-        // Avoids circular references +++ Maximum call stack size exceeded +++ DataCloneError: Failed to execute 'structuredClone' on 'Window'
-        let actualClone;
-        let expectedClone;
-        try {
-          actualClone = structuredClone(assertionDone.actual);
-        } catch (err) {
-          actualClone = !!assertionDone.actual;
-          // eslint-disable-next-line no-console
-          console.error(
-            new Error(
-              "An error occurred when cloning the assertion. Actual value was casted to Boolean to avoid breaking the execution.",
-              { cause: err },
-            ),
-          );
-        }
-        try {
-          expectedClone = structuredClone(assertionDone.expected);
-        } catch (err) {
-          expectedClone = !!assertionDone.expected;
-          // eslint-disable-next-line no-console
-          console.error(
-            new Error(
-              "An error occurred when cloning the assertion. Expected value was casted to Boolean to avoid breaking the execution.",
-              { cause: err },
-            ),
-          );
-        }
         return {
           success: assertionDone.result,
           message: assertionDone.message,
           todo: !!assertionDone.todo,
           source: assertionDone.source,
-          actual: actualClone,
-          expected: expectedClone,
+          actual: assertionDone.actual,
+          expected: assertionDone.expected,
           negative: !!assertionDone.negative,
         };
       });
