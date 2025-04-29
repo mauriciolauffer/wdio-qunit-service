@@ -17,7 +17,7 @@ export function generateTestCases(qunitResults: WdioQunitService.SuiteReport) {
   if (qunitResults.aborted) {
     describe(`Execution Aborted`, function mappingExecutionAborted() {
       it("global failure", async function mappingQunitResultSuccess() {
-        await expect(qunitResults.aborted).toEqual(undefined);
+        await expect(qunitResults.aborted).toBeUndefined();
       });
     });
   }
