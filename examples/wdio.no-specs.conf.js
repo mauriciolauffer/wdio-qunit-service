@@ -1,5 +1,6 @@
 import { defineConfig } from "@wdio/config";
 export const config = defineConfig({
+  specs: [""],
   capabilities: [
     {
       browserName: "chrome",

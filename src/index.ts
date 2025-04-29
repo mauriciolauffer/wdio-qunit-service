@@ -119,14 +119,18 @@ export default class QUnitService implements Services.ServiceInstance {
 class CustomLauncher implements Services.ServiceInstance {
   onPrepare(config: WebdriverIO.Config): void {
     log.debug("Executing onPrepare launcher...");
+    console.log(1111111111111);
     const serviceConfig = getServiceConfig(config?.services);
+    console.dir(serviceConfig);
     const files = getQUnitHtmlFiles(
       serviceConfig?.paths ?? [],
       config?.baseUrl,
     );
+    console.dir(files);
     if (files.length > 0) {
       config.specs?.push(join(import.meta.dirname, "default.test.js"));
     }
+    console.log(222222222222);
   }
 }
 
