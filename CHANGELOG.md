@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/mauriciolauffer/wdio-qunit-service/compare/v1.3.0...v2.0.0) (2025-04-29)
+
+
+### ⚠ BREAKING CHANGES
+
+* Drop CommonJS support ([#36](https://github.com/mauriciolauffer/wdio-qunit-service/issues/36))
+
+### Features
+
+* Drop CommonJS support ([#36](https://github.com/mauriciolauffer/wdio-qunit-service/issues/36)) ([80a41ba](https://github.com/mauriciolauffer/wdio-qunit-service/commit/80a41ba960a583ed299a414777dd9d8924bdbee1))
+
 ## [1.3.0](https://github.com/mauriciolauffer/wdio-qunit-service/compare/v1.2.0...v1.3.0) (2025-01-21)
 
 
