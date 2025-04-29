@@ -6,7 +6,7 @@ describe("QUnit unit test page", function () {
     await browser.getQUnitResults();
   });
 
-  it.skip("should pass Browse Orders unit tests - REMOTE - UI5 v1.120", async function () {
+  it("should pass Browse Orders unit tests - REMOTE - UI5 v1.120", async function () {
     await browser.url(
       "https://ui5.sap.com/1.120/test-resources/sap/m/demokit/orderbrowser/webapp/test/unit/unitTests.qunit.html",
     );

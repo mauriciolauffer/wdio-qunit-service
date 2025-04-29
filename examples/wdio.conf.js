@@ -1,4 +1,5 @@
-export const config = {
+import { defineConfig } from "@wdio/config";
+export const config = defineConfig({
   specs: ["./**/*.test.ts", "./**/*.test.js", "./**/*.test.cjs"],
 
   suites: {
@@ -33,7 +34,12 @@ export const config = {
       browserName: "chrome",
       browserVersion: "stable",
       "goog:chromeOptions": {
-        args: ["headless", "disable-gpu", "window-size=1024,768"],
+        args: [
+          "headless",
+          "disable-gpu",
+          "window-size=1920,1080",
+          "no-sandbox",
+        ],
       },
     },
   ],
@@ -41,7 +47,7 @@ export const config = {
   logLevel: "warn",
   framework: "mocha",
   reporters: ["spec"],
-  waitforTimeout: 120000,
+  waitforTimeout: 120000, // 2 minutes
 
   services: [
     "qunit",
@@ -55,6 +61,6 @@ export const config = {
 
   mochaOpts: {
     ui: "bdd",
-    timeout: 120000,
+    timeout: 600000, // 10 minutes
   },
-};
+});

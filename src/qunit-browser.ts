@@ -1,4 +1,4 @@
-import type WdioQunitService from "./types/wdio";
+import type WdioQunitService from "./types/wdio.js";
 
 /**
  * Called by WDIO browser.addInitScript to inject custom QUnit Reporter
@@ -57,34 +57,52 @@ export function injectQUnitReport(emit: (result: string) => void) {
    */
   function setQUnitCallbackEvents() {
     QUnit.log(function (data) {
-      window._wdioQunitService.collect.assertions.push(
-        data as WdioQunitService.AssertionDone,
-      );
+      window._wdioQunitService.collect.assertions.push({
+        ...(data as WdioQunitService.AssertionDone),
+      });
     });
     QUnit.testDone(function (data) {
-      window._wdioQunitService.collect.tests.push(
-        data as WdioQunitService.TestDone,
-      );
+      window._wdioQunitService.collect.tests.push({
+        ...(data as WdioQunitService.TestDone),
+      });
     });
     QUnit.moduleDone(function (data) {
-      window._wdioQunitService.collect.modules.push(
-        data as WdioQunitService.ModuleDone,
-      );
+      window._wdioQunitService.collect.modules.push({
+        ...(data as WdioQunitService.ModuleDone),
+      });
     });
     QUnit.done(function () {
-      const suiteReport = window._wdioQunitService.suiteReport;
-      const collectedTests = window._wdioQunitService.collect.tests;
-      buildModules();
-      suiteReport.name = window.location.href;
-      suiteReport.runtime =
-        suiteReport.childSuites.reduce((acc, obj) => acc + obj.runtime, 0) +
-        suiteReport.tests.reduce((acc, obj) => acc + obj.runtime, 0);
-      suiteReport.success =
-        collectedTests.filter((test) => test.failed > 0).length === 0;
-      suiteReport.completed = true;
-      window._wdioQunitService.results = [suiteReport];
-      setQunitReportParentWindow();
+      try {
+        buildModules();
+        setSuiteReport();
+      } catch (err) {
+        window._wdioQunitService.suiteReport.aborted =
+          "An error occured when mapping the QUnit results and the process was aborted. Caused by: " +
+          (err as Error).stack;
+        // In case of error, set Suite Report in the next tick to ensure the error is processed by QUnit
+        setTimeout(() => {
+          setSuiteReport();
+        }, 10);
+        throw err;
+      }
     });
+  }
+
+  /**
+   * Set QUnit Suite Report
+   */
+  function setSuiteReport() {
+    const suiteReport = window._wdioQunitService.suiteReport;
+    const collectedTests = window._wdioQunitService.collect.tests;
+    suiteReport.name = window.location.href;
+    suiteReport.runtime =
+      suiteReport.childSuites.reduce((acc, obj) => acc + obj.runtime, 0) +
+      suiteReport.tests.reduce((acc, obj) => acc + obj.runtime, 0);
+    suiteReport.success =
+      collectedTests.filter((test) => test.failed > 0).length === 0;
+    suiteReport.completed = true;
+    window._wdioQunitService.results = [suiteReport];
+    setQunitReportParentWindow();
   }
 
   /**
@@ -92,7 +110,7 @@ export function injectQUnitReport(emit: (result: string) => void) {
    */
   function buildModules(): void {
     const suiteReport = window._wdioQunitService.suiteReport;
-    const collectedModules = window._wdioQunitService.collect.modules;
+    const collectedModules = [...window._wdioQunitService.collect.modules];
     for (const qModule of collectedModules) {
       const tests = buildTests(qModule.tests);
       if (qModule.name) {
@@ -101,7 +119,7 @@ export function injectQUnitReport(emit: (result: string) => void) {
           name: qModule.name,
           success: qModule.failed === 0,
           runtime: qModule.runtime,
-          tests: tests,
+          tests: [...tests],
         });
       } else {
         suiteReport.tests = [...suiteReport.tests, ...tests];
@@ -115,9 +133,7 @@ export function injectQUnitReport(emit: (result: string) => void) {
   function buildTests(
     qModuleTests: WdioQunitService.TestReport[],
   ): WdioQunitService.TestReport[] {
-    const collectedTests = structuredClone(
-      window._wdioQunitService.collect.tests,
-    );
+    const collectedTests = [...window._wdioQunitService.collect.tests];
     return qModuleTests.map((qTest) => {
       const testDone = collectedTests.find(
         (testDone) => qTest.testId === testDone.testId,
@@ -130,7 +146,7 @@ export function injectQUnitReport(emit: (result: string) => void) {
         success: testDone?.failed === 0,
         skipped: !!testDone?.skipped,
         runtime: testDone?.runtime ?? 0,
-        assertions: assertions,
+        assertions: [...assertions],
       };
     });
   }
@@ -141,9 +157,9 @@ export function injectQUnitReport(emit: (result: string) => void) {
   function buildAssertions(
     qTest: WdioQunitService.TestReport,
   ): WdioQunitService.AssertionReport[] {
-    const collectedAssertions = structuredClone(
-      window._wdioQunitService.collect.assertions,
-    );
+    const collectedAssertions = [
+      ...window._wdioQunitService.collect.assertions,
+    ];
     return collectedAssertions
       .filter((assertionDone) => qTest.testId === assertionDone.testId)
       .map((assertionDone) => {
@@ -152,8 +168,8 @@ export function injectQUnitReport(emit: (result: string) => void) {
           message: assertionDone.message,
           todo: !!assertionDone.todo,
           source: assertionDone.source,
-          actual: structuredClone(assertionDone.actual),
-          expected: structuredClone(assertionDone.expected),
+          actual: assertionDone.actual,
+          expected: assertionDone.expected,
           negative: !!assertionDone.negative,
         };
       });

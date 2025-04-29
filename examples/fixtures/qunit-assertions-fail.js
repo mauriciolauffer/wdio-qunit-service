@@ -164,7 +164,7 @@ QUnit.test("Should pass assert.strictEqual", (assert) => {
 
 QUnit.test.skip("Should pass assert.throws", (assert) => {
   assert.throws(function () {
-    //throw new Error("boo");
+    throw new Error("boo");
   });
 });
 

@@ -1,4 +1,4 @@
-import type WdioQunitService from "./types/wdio";
+import type WdioQunitService from "./types/wdio.js";
 import logger from "@wdio/logger";
 
 const log = logger("wdio-qunit-service");
@@ -12,6 +12,13 @@ export function generateTestCases(qunitResults: WdioQunitService.SuiteReport) {
   if (qunitResults.tests.length > 0) {
     describe("...", function mappingQunitTestsWithoutModule() {
       convertQunitTests(qunitResults.tests);
+    });
+  }
+  if (qunitResults.aborted) {
+    describe(`Execution Aborted`, function mappingExecutionAborted() {
+      it("global failure", async function mappingQunitResultSuccess() {
+        await expect(qunitResults.aborted).toEqual(undefined);
+      });
     });
   }
   describe(`Injected WDIO QUnit Reporter`, function mappingQunitReporter() {

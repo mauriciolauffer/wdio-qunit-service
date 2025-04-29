@@ -1,5 +1,6 @@
-describe.skip("QUnit OPA5 integration test page", function () {
-  it("should pass Shopping Cart integration tests - REMOTE - UI5 v1.120", async function () {
+describe("QUnit OPA5 integration test page", function () {
+  it.skip("should pass Shopping Cart integration tests - REMOTE - UI5 v1.120", async function () {
+    // TODO: UI5 test taking too long to run
     await browser.url(
       "https://ui5.sap.com/1.120/test-resources/sap/m/demokit/cart/webapp/test/integration/opaTestsComponent.qunit.html",
     );
@@ -34,7 +35,8 @@ describe.skip("QUnit OPA5 integration test page", function () {
     await browser.getQUnitResults();
   });
 
-  it("should pass Manage Products integration tests - REMOTE - UI5 v1.120", async function () {
+  it.skip("should pass Manage Products integration tests - REMOTE - UI5 v1.120", async function () {
+    // TODO: Maximum call stack size exceeded
     await browser.url(
       "https://ui5.sap.com/1.120/test-resources/sap/m/demokit/tutorial/worklist/07/webapp/test/integration/opaTests.qunit.html",
     );
@@ -48,7 +50,8 @@ describe.skip("QUnit OPA5 integration test page", function () {
     await browser.getQUnitResults();
   });
 
-  it("should pass Ice Cream Machine integration tests - REMOTE - UI5 v1.120", async function () {
+  it.skip("should pass Ice Cream Machine integration tests - REMOTE - UI5 v1.120", async function () {
+    // TODO: Failing all tests
     await browser.url(
       "https://ui5.sap.com/1.120/test-resources/sap/suite/ui/commons/demokit/icecream/webapp/test/opa/opaTests.html",
     );

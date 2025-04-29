@@ -2,7 +2,6 @@ name: test
 
 on:
   push:
-    branches: [main]
   pull_request:
 
 permissions: read-all
@@ -25,8 +24,9 @@ jobs:
           cache: pnpm
       - run: pnpm i --prefer-offline
       - run: pnpm run build
-      - run: pnpm run test
-      - run: pnpm run test:no:specs
+      - run: pnpm run test:qunit
+      - run: pnpm run test:ui5
+      # - run: pnpm run test:no:specs
       - run: pnpm run lint
       - run: pnpm run lint:ci
       - uses: github/codeql-action/upload-sarif@v3

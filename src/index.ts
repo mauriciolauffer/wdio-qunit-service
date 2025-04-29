@@ -1,10 +1,8 @@
 import type { Capabilities, Services } from "@wdio/types";
-import type { ServiceEntry } from "@wdio/types/build/Services";
-import type WdioQunitService from "./types/wdio";
+import type WdioQunitService from "./types/wdio.js";
 import { join } from "node:path";
 import { URL } from "node:url";
 import logger from "@wdio/logger";
-import { getDirname } from "cross-dirname";
 import { injectQUnitReport, getQUnitSuiteReport } from "./qunit-browser.js";
 import { sharedContext } from "./sharedContext.js";
 import { generateTestCases } from "./mapper.js";
@@ -15,7 +13,7 @@ const log = logger("wdio-qunit-service");
  * Get QUnit service configuration
  */
 function getServiceConfig(
-  services?: ServiceEntry[],
+  services?: Services.ServiceEntry[],
 ): WdioQunitService.ServiceOption {
   return services
     ?.filter(
@@ -127,7 +125,7 @@ class CustomLauncher implements Services.ServiceInstance {
       config?.baseUrl,
     );
     if (files.length > 0) {
-      config.specs?.push(join(getDirname(), "default.test.js"));
+      config.specs?.push(join(import.meta.dirname, "default.test.js"));
     }
   }
 }

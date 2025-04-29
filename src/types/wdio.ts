@@ -66,6 +66,7 @@ declare namespace WdioQunitService {
     name: string;
     tests: TestReport[];
     childSuites: ChildSuite[];
+    aborted?: string;
   }
 
   interface ChildSuite {
