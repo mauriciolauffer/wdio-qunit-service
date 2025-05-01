@@ -50,7 +50,7 @@ describe("QUnit unit test page", function () {
 
   it("should pass Ice Cream Machine unit tests - REMOTE - UI5 latest", async function () {
     await browser.url(
-      "https://ui5.sap.com/test-resources/sap/suite/ui/commons/demokit/icecream/webapp/test/unit/unitTests.qunit.html",
+      "https://ui5.sap.com/test-resources/sap/suite/ui/commons/demokit/icecream/webapp/test/Test.qunit.html?testsuite=test-resources/sap/suite/ui/commons/demokit/icecream/testsuite.qunit&test=unit/unitTests",
     );
     await browser.getQUnitResults();
   });

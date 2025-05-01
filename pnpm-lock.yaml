@@ -82,7 +82,7 @@ importers:
         specifier: ^1.0.2
         version: 1.0.2
       wdio-qunit-service:
-        specifier: link:C:/zdev/wdio-qunit-service
+        specifier: 'link:'
         version: 'link:'
 
 packages:
