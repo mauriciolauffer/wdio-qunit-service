@@ -28,7 +28,7 @@ export const config = defineConfig({
       "./wdio-*/**/*.test.js",
       "./wdio-*/**/*.test.cjs",
     ],
-    "ui5-integration": ["./ui5-*/**/integration.test.js"],
+    "ui5-opa": ["./ui5-*/**/integration.test.js"],
     "ui5-testrunner": ["./ui5-*/**/testrunner.test.js"],
     qunit: [
       "./qunit-v*/**/*.test.ts",
@@ -59,15 +59,12 @@ export const config = defineConfig({
 
   reporters: [
     "spec",
-    [
-      "json",
-      {
-        outputDir: "./test-results",
-        outputFileFormat: (opts) => {
-          return `results-${opts.cid}.${opts.capabilities.browserName}.json`;
-        },
-      },
-    ],
+    ['junit', {
+      outputDir: "./test-results",
+      outputFileFormat: function(options) {
+          return `results-${options.cid}.${options.capabilities.browserName}.xml`
+      }
+  }]
   ],
 
   services: [
