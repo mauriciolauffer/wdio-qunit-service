@@ -1,3 +1,4 @@
+import { cpus } from "node:os";
 import { defineConfig } from "@wdio/config";
 export const config = defineConfig({
   specs: ["./**/*.test.ts", "./**/*.test.js", "./**/*.test.cjs"],
@@ -22,6 +23,13 @@ export const config = defineConfig({
       "./wdio-*/**/*.test.js",
       "./wdio-*/**/*.test.cjs",
     ],
+    "ui5-unit": [
+      "./ui5-*/**/unit.test.js",
+      "./wdio-*/**/*.test.js",
+      "./wdio-*/**/*.test.cjs",
+    ],
+    "ui5-integration": ["./ui5-*/**/integration.test.js"],
+    "ui5-testrunner": ["./ui5-*/**/testrunner.test.js"],
     qunit: [
       "./qunit-v*/**/*.test.ts",
       "./qunit-iframes/unit.test.ts",
@@ -44,10 +52,23 @@ export const config = defineConfig({
     },
   ],
 
+  maxInstances: cpus().length || 4,
   logLevel: "warn",
   framework: "mocha",
-  reporters: ["spec"],
-  waitforTimeout: 120000, // 2 minutes
+  waitforTimeout: 180000, // 3 minutes
+
+  reporters: [
+    "spec",
+    [
+      "json",
+      {
+        outputDir: "./test-results",
+        outputFileFormat: (opts) => {
+          return `results-${opts.cid}.${opts.capabilities.browserName}.json`;
+        },
+      },
+    ],
+  ],
 
   services: [
     "qunit",
