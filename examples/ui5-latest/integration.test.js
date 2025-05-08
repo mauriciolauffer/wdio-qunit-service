@@ -53,7 +53,7 @@ describe("QUnit OPA5 integration test page", function () {
   it.skip("should pass Ice Cream Machine integration tests - REMOTE - UI5 latest", async function () {
     // TODO: Failing all tests
     await browser.url(
-      "https://ui5.sap.com/test-resources/sap/suite/ui/commons/demokit/icecream/webapp/test/opa/opaTests.html",
+      "https://ui5.sap.com/test-resources/sap/suite/ui/commons/demokit/icecream/webapp/test/Test.qunit.html?testsuite=test-resources/sap/suite/ui/commons/demokit/icecream/testsuite.qunit&test=opa/opaTests",
     );
     await browser.getQUnitResults();
   });

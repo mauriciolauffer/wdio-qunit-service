@@ -18,7 +18,7 @@ export const config = {
   logLevel: "warn",
   framework: "mocha",
   reporters: ["spec"],
-  waitforTimeout: 5000,
+  waitforTimeout: 120000, // 2 minutes
   baseUrl: "http://localhost:4567",
 
   services: [
@@ -31,7 +31,7 @@ export const config = {
           "examples/qunit-v2.3/qunit-all.html",
           "examples/qunit-v2.22/qunit-all.html",
           "https://ui5.sap.com/1.120/test-resources/sap/m/demokit/orderbrowser/webapp/test/unit/unitTests.qunit.html",
-          "https://ui5.sap.com/test-resources/sap/m/demokit/tutorial/testing/14/webapp/test/Test.qunit.html?testsuite=test-resources/sap/ui/demo/bulletinboard/testsuite.qunit&test=unit/unitTests",
+          "https://ui5.sap.com/1.120/test-resources/sap/ui/qunit/testrunner.html?testpage=/test-resources/sap/m/demokit/tutorial/testing/14/webapp/test/testsuite.qunit.html&autostart=true",
           "examples/qunit-preconfiguration/qunit-flat-config.html",
           "examples/qunit-preconfiguration/qunit-object-config.html",
           "examples/qunit-iframes/qunit-iframes.html",
@@ -47,6 +47,6 @@ export const config = {
   ],
   mochaOpts: {
     ui: "bdd",
-    timeout: 60000,
+    timeout: 600000, // 10 minutes
   },
 };
