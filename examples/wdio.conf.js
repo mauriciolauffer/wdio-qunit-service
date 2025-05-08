@@ -64,7 +64,7 @@ export const config = defineConfig({
       {
         outputDir: "./test-results",
         outputFileFormat: function (options) {
-          return `results-${options.cid}.${options.capabilities.browserName}.xml`;
+          return `results-${options.suite?.[0]}.${options.cid}.${options.capabilities.browserName}.xml`;
         },
       },
     ],
