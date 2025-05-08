@@ -59,12 +59,15 @@ export const config = defineConfig({
 
   reporters: [
     "spec",
-    ['junit', {
-      outputDir: "./test-results",
-      outputFileFormat: function(options) {
-          return `results-${options.cid}.${options.capabilities.browserName}.xml`
-      }
-  }]
+    [
+      "junit",
+      {
+        outputDir: "./test-results",
+        outputFileFormat: function (options) {
+          return `results-${options.cid}.${options.capabilities.browserName}.xml`;
+        },
+      },
+    ],
   ],
 
   services: [
