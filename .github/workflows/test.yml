@@ -25,6 +25,8 @@ jobs:
           cache: pnpm
       - run: pnpm i --prefer-offline
       - run: pnpm run build
+      - name: Run Unit Tests
+        run: pnpm run test:unit
       - run: pnpm run test
       # - run: pnpm run test:no:specs
       - name: Test Report

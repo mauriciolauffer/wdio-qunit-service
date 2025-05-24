@@ -35,7 +35,8 @@
     "test:ui5:app:nospecs": "wdio run examples/openui5-sample-app-no-specs/webapp/test/wdio.conf.js",
     "lint": "prettier . --check --cache && eslint --cache",
     "lint:ci": "eslint --quiet -f @microsoft/eslint-formatter-sarif -o eslint.sarif",
-    "pretty": "prettier . --write --cache"
+    "pretty": "prettier . --write --cache",
+    "test:unit": "vitest run src"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.10",
