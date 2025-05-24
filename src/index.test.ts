@@ -5,53 +5,43 @@ import { injectQUnitReport, getQUnitSuiteReport } from '../src/qunit-browser';
 import * as sharedContext from '../src/sharedContext';
 import { generateTestCases } from '../src/mapper';
 import logger from '@wdio/logger';
+import { describe, it, expect, beforeEach, afterEach, afterAll, vi } from 'vitest';
 
-jest.mock('@wdio/logger', () => {
-  const mockLog = {
-    info: jest.fn(),
-    warn: jest.fn(),
-    error: jest.fn(),
-    debug: jest.fn(),
-  };
-  return jest.fn(() => mockLog);
-});
-
-jest.mock('node:path', () => ({
-  join: jest.fn(),
+const mockLogInstance = {
+  info: vi.fn(),
+  warn: vi.fn(),
+  error: vi.fn(),
+  debug: vi.fn(),
+};
+vi.mock('@wdio/logger', () => ({
+  default: vi.fn(() => mockLogInstance)
 }));
 
-jest.mock('node:url', () => ({
-  URL: jest.fn(),
+vi.mock('node:path', () => ({
+  join: vi.fn(),
 }));
 
-jest.mock('../src/qunit-browser', () => ({
-  injectQUnitReport: jest.fn(),
-  getQUnitSuiteReport: jest.fn(),
+vi.mock('node:url', () => ({
+  URL: vi.fn(),
 }));
 
-jest.mock('../src/sharedContext', () => ({
+vi.mock('../src/qunit-browser', () => ({
+  injectQUnitReport: vi.fn(),
+  getQUnitSuiteReport: vi.fn(),
+}));
+
+vi.mock('../src/sharedContext', () => ({
   qunitHtmlFiles: [],
 }));
 
-jest.mock('../src/mapper', () => ({
-  generateTestCases: jest.fn(),
+vi.mock('../src/mapper', () => ({
+  generateTestCases: vi.fn(),
 }));
 
-const mockBrowser = {
-  addCommand: jest.fn(),
-  addInitScript: jest.fn().mockReturnValue({
-    on: jest.fn(),
-  }),
-  execute: jest.fn(),
-  waitUntil: jest.fn(),
-  options: {},
-  config: {},
-};
+// mockBrowser will be handled by @wdio/globals mock if needed, or directly passed if generateTestCases expects it.
+// For now, assuming 'browser' global is not directly set here but managed by test environment or other mocks.
 
-// @ts-ignore
-global.browser = mockBrowser;
-
-const log = logger('test');
+const log = logger('test'); // This will now use the mocked logger
 
 // Helper function (copy of private getServiceConfig)
 const getServiceConfig = (services?: any[][]) => {
@@ -119,7 +109,7 @@ const getQUnitHtmlFiles = (paths: string[] = [], baseUrl?: string) => {
 describe('getQUnitHtmlFiles', () => {
   beforeEach(() => {
     // Reset mocks for URL and log before each test in this describe block
-    jest.clearAllMocks(); // Clears all mocks, including logger and URL
+    vi.clearAllMocks(); // Clears all mocks, including logger and URL
     // Re-mock URL specifically for this describe block's needs if necessary
     // For now, relying on the global mock and clearAllMocks
   });
@@ -138,7 +128,7 @@ describe('getQUnitHtmlFiles', () => {
   });
 
   it('should use baseUrl for relative paths', () => {
-    (URL as unknown as jest.Mock).mockImplementation((path, base) => {
+    (URL as unknown as vi.Mock).mockImplementation((path, base) => {
       if (path === '/test.html' && base === 'http://localhost') {
         return { href: 'http://localhost/test.html', protocol: 'http:' };
       }
@@ -149,18 +139,18 @@ describe('getQUnitHtmlFiles', () => {
   });
 
   it('should log a warning and skip invalid URLs (non-http/https)', () => {
-    (URL as unknown as jest.Mock).mockImplementation((path) => {
+    (URL as unknown as vi.Mock).mockImplementation((path) => {
       if (path === 'file:///test.html') {
         return { href: 'file:///test.html', protocol: 'file:' };
       }
       throw new Error('Unexpected URL constructor call for file protocol');
     });
     expect(getQUnitHtmlFiles(['file:///test.html'], 'http://localhost')).toEqual([]);
-    expect(log.warn).toHaveBeenCalledWith('Invalid QUnit HTML file URL: file:///test.html');
+    expect(mockLogInstance.warn).toHaveBeenCalledWith('Invalid QUnit HTML file URL: file:///test.html');
   });
 
   it('should log a warning and skip paths that cause URL constructor to throw', () => {
-    (URL as unknown as jest.Mock).mockImplementation((path) => {
+    (URL as unknown as vi.Mock).mockImplementation((path) => {
       if (path === 'invalid-path') {
         throw new Error('Invalid URL');
       }
@@ -168,11 +158,11 @@ describe('getQUnitHtmlFiles', () => {
       throw new Error('Unexpected URL constructor call');
     });
     expect(getQUnitHtmlFiles(['invalid-path'], 'http://localhost')).toEqual([]);
-    expect(log.warn).toHaveBeenCalledWith('Invalid QUnit HTML file URL: invalid-path');
+    expect(mockLogInstance.warn).toHaveBeenCalledWith('Invalid QUnit HTML file URL: invalid-path');
   });
 
   it('should handle a mix of valid and invalid paths', () => {
-    (URL as unknown as jest.Mock).mockImplementation((path, base) => {
+    (URL as unknown as vi.Mock).mockImplementation((path, base) => {
       if (path === 'http://example.com/valid.html') {
         return { href: 'http://example.com/valid.html', protocol: 'http:' };
       }
@@ -192,13 +182,13 @@ describe('getQUnitHtmlFiles', () => {
     const paths = ['http://example.com/valid.html', '/relative.html', 'invalid-one', 'ftp://example.com/not-http.html'];
     const expected = ['http://example.com/valid.html', 'http://localhost/relative.html'];
     expect(getQUnitHtmlFiles(paths, 'http://localhost')).toEqual(expected);
-    expect(log.warn).toHaveBeenCalledWith('Invalid QUnit HTML file URL: invalid-one');
-    expect(log.warn).toHaveBeenCalledWith('Invalid QUnit HTML file URL: ftp://example.com/not-http.html');
-    expect(log.warn).toHaveBeenCalledTimes(2);
+    expect(mockLogInstance.warn).toHaveBeenCalledWith('Invalid QUnit HTML file URL: invalid-one');
+    expect(mockLogInstance.warn).toHaveBeenCalledWith('Invalid QUnit HTML file URL: ftp://example.com/not-http.html');
+    expect(mockLogInstance.warn).toHaveBeenCalledTimes(2);
   });
 
   it('should work without a baseUrl if all paths are absolute', () => {
-    (URL as unknown as jest.Mock).mockImplementation((path, base) => {
+    (URL as unknown as vi.Mock).mockImplementation((path, base) => {
       if (base !== undefined && path !== 'http://example.com/test.html') {
         // This check ensures that if a base URL is unexpectedly passed for absolute URLs, we'd know.
         // However, the URL constructor itself handles this by ignoring `base` if `path` is absolute.
@@ -214,7 +204,7 @@ describe('getQUnitHtmlFiles', () => {
   });
 
   it('should log warning if relative path is given without baseUrl', () => {
-    (URL as unknown as jest.Mock).mockImplementation((path, base) => {
+    (URL as unknown as vi.Mock).mockImplementation((path, base) => {
       if (path === '/relative.html' && base === undefined) {
         // This simulates the TypeError that would occur if a relative URL is passed without a base.
         throw new TypeError('Invalid URL');
@@ -222,7 +212,7 @@ describe('getQUnitHtmlFiles', () => {
       throw new Error('Unexpected URL constructor call');
     });
     expect(getQUnitHtmlFiles(['/relative.html'])).toEqual([]);
-    expect(log.warn).toHaveBeenCalledWith('Invalid QUnit HTML file URL: /relative.html');
+    expect(mockLogInstance.warn).toHaveBeenCalledWith('Invalid QUnit HTML file URL: /relative.html');
   });
 });
 
@@ -240,7 +230,7 @@ const getQunitResultsFromBrowser = async (browserInstance: any) => {
     );
     return browserInstance.execute(getQUnitSuiteReport);
   } catch (e: any) {
-    log.error(`Error getting QUnit results: ${e.message}`);
+    mockLogInstance.error(`Error getting QUnit results: ${e.message}`);
     return null;
   }
 };
@@ -250,10 +240,10 @@ describe('getQunitResultsFromBrowser', () => {
 
   beforeEach(() => {
     mockBrowserInstance = {
-      waitUntil: jest.fn(),
-      execute: jest.fn(),
+      waitUntil: vi.fn(),
+      execute: vi.fn(),
     };
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should return QUnit suite report when ready', async () => {
@@ -281,7 +271,7 @@ describe('getQunitResultsFromBrowser', () => {
     const result = await getQunitResultsFromBrowser(mockBrowserInstance);
 
     expect(result).toBeNull();
-    expect(log.error).toHaveBeenCalledWith(`Error getting QUnit results: ${timeoutError.message}`);
+    expect(mockLogInstance.error).toHaveBeenCalledWith(`Error getting QUnit results: ${timeoutError.message}`);
     expect(mockBrowserInstance.execute).not.toHaveBeenCalled();
   });
 
@@ -299,7 +289,7 @@ describe('getQunitResultsFromBrowser', () => {
     const result = await getQunitResultsFromBrowser(mockBrowserInstance);
 
     expect(result).toBeNull();
-    expect(log.error).toHaveBeenCalledWith('Error getting QUnit results: Simulated waitUntil failure due to execute error');
+    expect(mockLogInstance.error).toHaveBeenCalledWith('Error getting QUnit results: Simulated waitUntil failure due to execute error');
   });
 
 
@@ -317,7 +307,7 @@ describe('getQunitResultsFromBrowser', () => {
     const result = await getQunitResultsFromBrowser(mockBrowserInstance);
 
     expect(result).toBeNull();
-    expect(log.error).toHaveBeenCalledWith(`Error getting QUnit results: ${executeError.message}`);
+    expect(mockLogInstance.error).toHaveBeenCalledWith(`Error getting QUnit results: ${executeError.message}`);
     expect(mockBrowserInstance.execute).toHaveBeenCalledTimes(2); // Once in waitUntil, once for the (failed) result
   });
 });
@@ -329,12 +319,12 @@ async function getQUnitResults(this: WebdriverIO.Browser) {
   const htmlFiles = sharedContext.qunitHtmlFiles;
 
   if (!htmlFiles || htmlFiles.length === 0) {
-    log.info('No QUnit HTML files found to test.');
+    mockLogInstance.info('No QUnit HTML files found to test.');
     return;
   }
 
   for (const filePath of htmlFiles) {
-    log.info(`Navigating to QUnit page: ${filePath}`);
+    mockLogInstance.info(`Navigating to QUnit page: ${filePath}`);
     await browserInstance.url(filePath);
     const report = await getQunitResultsFromBrowser(browserInstance); // Using the helper
     if (report) {
@@ -362,14 +352,14 @@ describe('getQUnitResults', () => {
 
   beforeEach(() => {
     mockBrowserInstance = {
-      url: jest.fn().mockResolvedValue(undefined),
+      url: vi.fn().mockResolvedValue(undefined),
       // Add other necessary browser methods if getQunitResultsFromBrowser (helper) uses them
-      waitUntil: jest.fn(),
-      execute: jest.fn(),
+      waitUntil: vi.fn(),
+      execute: vi.fn(),
     };
     // @ts-ignore
-    getQunitResultsFromBrowser = jest.fn(); // Mock the helper function
-    jest.clearAllMocks();
+    getQunitResultsFromBrowser = vi.fn(); // Mock the helper function
+    vi.clearAllMocks();
   });
 
   afterAll(() => {
@@ -380,7 +370,7 @@ describe('getQUnitResults', () => {
   it('should log info and return if no HTML files are found', async () => {
     sharedContext.qunitHtmlFiles = [];
     await getQUnitResults.call(mockBrowserInstance);
-    expect(log.info).toHaveBeenCalledWith('No QUnit HTML files found to test.');
+    expect(mockLogInstance.info).toHaveBeenCalledWith('No QUnit HTML files found to test.');
     expect(mockBrowserInstance.url).not.toHaveBeenCalled();
     expect(getQunitResultsFromBrowser).not.toHaveBeenCalled();
     expect(generateTestCases).not.toHaveBeenCalled();
@@ -392,7 +382,7 @@ describe('getQUnitResults', () => {
     const report1 = { id: 'report1', name: 'Test Suite 1', fullName: ['Test Suite 1'], tests: [], suites: [], duration: 0, skipped: false, success: true };
     const report2 = { id: 'report2', name: 'Test Suite 2', fullName: ['Test Suite 2'], tests: [], suites: [], duration: 0, skipped: false, success: true };
 
-    (getQunitResultsFromBrowser as jest.Mock)
+    (getQunitResultsFromBrowser as vi.Mock)
       .mockResolvedValueOnce(report1)
       .mockResolvedValueOnce(report2);
 
@@ -412,7 +402,7 @@ describe('getQUnitResults', () => {
   it('should generate a failed test case if a report cannot be fetched', async () => {
     const file = 'http://localhost/test-fail.html';
     sharedContext.qunitHtmlFiles = [file];
-    (getQunitResultsFromBrowser as jest.Mock).mockResolvedValueOnce(null);
+    (getQunitResultsFromBrowser as vi.Mock).mockResolvedValueOnce(null);
 
     await getQUnitResults.call(mockBrowserInstance);
 
@@ -436,7 +426,7 @@ describe('getQUnitResults', () => {
     sharedContext.qunitHtmlFiles = files;
     const successReport = { id: 'success', name: 'Success Suite', fullName: ['Success Suite'], tests: [], suites: [], duration: 0, skipped: false, success: true };
 
-    (getQunitResultsFromBrowser as jest.Mock)
+    (getQunitResultsFromBrowser as vi.Mock)
       .mockResolvedValueOnce(successReport)
       .mockResolvedValueOnce(null); // Fail for the second file
 
@@ -466,20 +456,20 @@ describe('QUnit Framework Service', () => {
   beforeEach(() => {
     service = new QUnitService();
     mockScript = {
-      on: jest.fn(),
+      on: vi.fn(),
     };
     mockBrowserInstance = {
-      addCommand: jest.fn(),
-      addInitScript: jest.fn().mockReturnValue(mockScript),
+      addCommand: vi.fn(),
+      addInitScript: vi.fn().mockReturnValue(mockScript),
       // options and config might be accessed, so provide them
       options: {},
       config: {},
     };
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('before', () => {
@@ -501,7 +491,7 @@ describe('QUnit Framework Service', () => {
       // Then call it with some mock data
       const mockData = { some: 'data' };
       dataEventHandler(mockData);
-      expect(log.warn).toHaveBeenCalledWith(
+      expect(mockLogInstance.warn).toHaveBeenCalledWith(
         `QUnit test suite data: ${JSON.stringify(mockData)}`
       );
     });
@@ -514,7 +504,7 @@ describe('QUnit Framework Service', () => {
         baseUrl: 'http://localhost',
       };
       // Mock URL constructor behavior for this test
-      (URL as unknown as jest.Mock).mockImplementation((path, base) => {
+      (URL as unknown as vi.Mock).mockImplementation((path, base) => {
         if (path === '/test1.html' && base === 'http://localhost') {
           return { href: 'http://localhost/test1.html', protocol: 'http:' };
         }
@@ -556,7 +546,7 @@ describe('QUnit Framework Service', () => {
         services: [['qunit', { paths: ['valid.html', 'invalid-url-throws', 'file:///local.html'] }]],
         baseUrl: 'http://localhost',
       };
-      (URL as unknown as jest.Mock).mockImplementation((path, base) => {
+      (URL as unknown as vi.Mock).mockImplementation((path, base) => {
         if (path === 'valid.html' && base === 'http://localhost') {
           return { href: 'http://localhost/valid.html', protocol: 'http:' };
         }
@@ -571,8 +561,8 @@ describe('QUnit Framework Service', () => {
 
       service.beforeSession(mockConfig as any, {} as any, {} as any);
       expect(sharedContext.qunitHtmlFiles).toEqual(['http://localhost/valid.html']);
-      expect(log.warn).toHaveBeenCalledWith('Invalid QUnit HTML file URL: invalid-url-throws');
-      expect(log.warn).toHaveBeenCalledWith('Invalid QUnit HTML file URL: file:///local.html');
+      expect(mockLogInstance.warn).toHaveBeenCalledWith('Invalid QUnit HTML file URL: invalid-url-throws');
+      expect(mockLogInstance.warn).toHaveBeenCalledWith('Invalid QUnit HTML file URL: file:///local.html');
     });
   });
 });
@@ -593,16 +583,16 @@ describe('CustomLauncher', () => {
     // Reset sharedContext.qunitHtmlFiles for each test to avoid leakage
     sharedContext.qunitHtmlFiles = [];
     // Mock path.join
-    (join as jest.Mock).mockImplementation((...args) => args.join('/')); // Simple mock for join
+    (join as vi.Mock).mockImplementation((...args) => args.join('/')); // Simple mock for join
     // Mock URL for getQUnitHtmlFiles logic if it's indirectly called
-    (URL as unknown as jest.Mock).mockImplementation((path, base) => {
+    (URL as unknown as vi.Mock).mockImplementation((path, base) => {
       if (path === '/test.html' && base === 'http://localhost') {
         return { href: 'http://localhost/test.html', protocol: 'http:' };
       }
       // Fallback for other URL constructions if necessary
       return { href: `${base || ''}${path}`, protocol: 'http:'};
     });
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   afterAll(() => {
@@ -658,7 +648,7 @@ describe('CustomLauncher', () => {
 
   it('should not modify config.specs if QUnit HTML files list is empty (e.g., all paths invalid)', () => {
     mockConfig.services = [['qunit', { paths: ['invalid-path'] }]];
-    (URL as unknown as jest.Mock).mockImplementation(() => { throw new Error('Invalid URL'); });
+    (URL as unknown as vi.Mock).mockImplementation(() => { throw new Error('Invalid URL'); });
     // Ensure qunitHtmlFiles is empty
     const serviceConfig = getServiceConfig(mockConfig.services);
     if (serviceConfig?.paths) {

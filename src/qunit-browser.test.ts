@@ -1,13 +1,17 @@
+import { describe, it, expect, beforeEach, afterEach, vi, SpyInstance } from 'vitest';
+
+import { describe, it, expect, beforeEach, afterEach, vi, SpyInstance } from 'vitest';
+
 // Mock global window and QUnit objects
 const mockQUnit = {
-  log: jest.fn(),
-  testDone: jest.fn(),
-  moduleDone: jest.fn(),
-  done: jest.fn(),
+  log: vi.fn(),
+  testDone: vi.fn(),
+  moduleDone: vi.fn(),
+  done: vi.fn(),
   config: {
     currentModule: {
       name: '',
-      tests: [],
+      tests: [] as any[], // Assuming tests is an array, adjust type as needed
       moduleId: '',
     },
   },
@@ -23,15 +27,15 @@ global.window = {
     href: 'http://localhost/test.html',
   },
   crypto: {
-    randomUUID: jest.fn(() => 'mock-uuid-123'),
+    randomUUID: vi.fn(() => 'mock-uuid-123'),
   },
   // For iframe tests
   self: global, // Initially, window.self === window.top (or window.parent)
   parent: global,
   // For emit
-  emit: jest.fn(),
+  emit: vi.fn(),
   // For setTimeout in error handling
-  setTimeout: jest.fn((fn) => fn()),
+  setTimeout: vi.fn((fn: (...args: any[]) => void) => fn()),
 };
 
 // @ts-ignore
@@ -56,29 +60,29 @@ describe('QUnit Browser Script', () => {
     // @ts-ignore
     global.window.location.href = 'http://localhost/test.html';
     // @ts-ignore
-    global.window.crypto.randomUUID.mockClear().mockReturnValue('mock-uuid-123');
+    (global.window.crypto.randomUUID as vi.Mock).mockClear().mockReturnValue('mock-uuid-123');
     // @ts-ignore
     global.window.self = global;
     // @ts-ignore
     global.window.parent = global;
     // @ts-ignore
-    global.window.emit.mockClear();
+    (global.window.emit as vi.Mock).mockClear();
     // @ts-ignore
-    global.window.setTimeout.mockClear().mockImplementation((fn) => fn());
+    (global.window.setTimeout as vi.Mock).mockClear().mockImplementation((fn: (...args: any[]) => void) => fn());
 
 
-    mockQUnit.log.mockClear();
-    mockQUnit.testDone.mockClear();
-    mockQUnit.moduleDone.mockClear();
-    mockQUnit.done.mockClear();
+    (mockQUnit.log as vi.Mock).mockClear();
+    (mockQUnit.testDone as vi.Mock).mockClear();
+    (mockQUnit.moduleDone as vi.Mock).mockClear();
+    (mockQUnit.done as vi.Mock).mockClear();
     mockQUnit.config.currentModule = { name: '', tests: [], moduleId: '' };
 
     // Clear Object.defineProperty spy if it was used
-    jest.restoreAllMocks(); // This will also clear spies made with jest.spyOn
+    vi.restoreAllMocks(); // This will also clear spies made with vi.spyOn
   });
 
   // Mock for createQunitReport as it's a private function
-  const mockCreateQunitReport = jest.fn();
+  const mockCreateQunitReport = vi.fn();
 
   describe('injectQUnitReport', () => {
     let originalWdioQunitService: WdioQunitService | undefined;
@@ -100,7 +104,7 @@ describe('QUnit Browser Script', () => {
     it('should do nothing if window._wdioQunitService is already defined', () => {
       const existingService = {} as WdioQunitService;
       global.window._wdioQunitService = existingService;
-      const definePropertySpy = jest.spyOn(Object, 'defineProperty');
+      const definePropertySpy = vi.spyOn(Object, 'defineProperty');
 
       injectQUnitReport();
 
@@ -110,11 +114,11 @@ describe('QUnit Browser Script', () => {
     });
 
     describe('when window._wdioQunitService is not defined', () => {
-      let definePropertySpy: jest.SpyInstance;
+      let definePropertySpy: SpyInstance;
 
       beforeEach(() => {
         global.window._wdioQunitService = undefined; // Ensure it's undefined
-        definePropertySpy = jest.spyOn(Object, 'defineProperty');
+        definePropertySpy = vi.spyOn(Object, 'defineProperty');
         // Replace the actual createQunitReport with our mock for this specific describe block
         // This is a way to inject a mock for a non-exported function if it were called directly by injectQUnitReport
         // However, injectQUnitReport sets up QUnit, and the QUnit setter calls createQunitReport.
@@ -136,7 +140,7 @@ describe('QUnit Browser Script', () => {
 
       it('getter for window.QUnit should return the internal value', () => {
         injectQUnitReport();
-        const descriptor = definePropertySpy.mock.calls[0][2];
+        const descriptor = (definePropertySpy.mock.calls[0] as any)[2];
         const mockInitialQUnit = { some: 'qunit_initial_value' };
         // @ts-ignore // Simulate internal value
         descriptor.value = mockInitialQUnit;
@@ -153,11 +157,11 @@ describe('QUnit Browser Script', () => {
           // and then test its setter logic.
           // Redefine the spy for each test to get a fresh descriptor or manage its state.
           definePropertySpy.mockRestore(); // Restore from outer scope
-          definePropertySpy = jest.spyOn(Object, 'defineProperty');
+          definePropertySpy = vi.spyOn(Object, 'defineProperty');
 
           injectQUnitReport(); // This calls defineProperty
 
-          descriptor = definePropertySpy.mock.calls[0][2];
+          descriptor = (definePropertySpy.mock.calls[0]as any)[2];
           mockInternalQUnitValue = undefined; // Reset internal value representation
           // @ts-ignore Simulate the internal 'value' the setter operates on
           descriptor.value = mockInternalQUnitValue;
@@ -191,7 +195,7 @@ describe('QUnit Browser Script', () => {
 
 
         it('should do nothing if newValue is the same as current value', () => {
-          const currentQUnit = { log: jest.fn() };
+          const currentQUnit = { log: vi.fn() };
           // @ts-ignore Simulate internal value being set
           descriptor.value = currentQUnit;
           descriptor.set!(currentQUnit); // Call the setter
@@ -200,11 +204,11 @@ describe('QUnit Browser Script', () => {
           expect(window.emit).not.toHaveBeenCalled();
         });
 
-        it('should set value, call createQunitReport, and emit if newValue is different and has .log', () => {
-          const newQUnit = { log: jest.fn(), testDone: jest.fn() }; // A valid QUnit-like object
-          const originalCreateQunitReport = jest.requireActual('../src/qunit-browser').createQunitReport; // Get actual for a moment
-          const createQunitReportSpy = jest.spyOn(jest.requireActual('../src/qunit-browser'), 'createQunitReport');
-          
+        it('should set value, call createQunitReport, and emit if newValue is different and has .log', async () => {
+          const newQUnit = { log: vi.fn(), testDone: vi.fn() }; // A valid QUnit-like object
+          const actualModule = await vi.importActual('../src/qunit-browser') as any;
+          const createQunitReportSpy = vi.spyOn(actualModule, 'createQunitReport');
+
           // This is tricky. The `createQunitReport` is in the closure of `injectQUnitReport`.
           // We can't directly mock it from outside easily for the version defined *inside* `injectQUnitReport`.
           // We will test its *effects* instead in the `createQunitReport` specific tests.
@@ -236,11 +240,11 @@ describe('QUnit Browser Script', () => {
         });
 
          it('should only set value if newValue is different, has .log, but QUnit is already defined (e.g. page reload with script re-inject)', () => {
-          const initialQUnit = { log: jest.fn(), testDone: jest.fn(), version: '1.0.0' };
+          const initialQUnit = { log: vi.fn(), testDone: vi.fn(), version: '1.0.0' };
           // @ts-ignore
           descriptor.value = initialQUnit; // Simulate QUnit already being set once
 
-          const newQUnitInstance = { log: jest.fn(), testDone: jest.fn(), version: '2.0.0' }; // A new instance of QUnit
+          const newQUnitInstance = { log: vi.fn(), testDone: vi.fn(), version: '2.0.0' }; // A new instance of QUnit
           
           // As per current injectQUnitReport logic, if value !== newValue, and newValue.log exists,
           // it will call createQunitReport() and emit().
@@ -294,8 +298,8 @@ describe('QUnit Browser Script', () => {
   }
 
   // Mocks for functions called by createQunitReport
-  const mockSetQunitReportParentWindow = jest.fn();
-  const mockSetQUnitCallbackEvents = jest.fn();
+  const mockSetQunitReportParentWindow = vi.fn();
+  const mockSetQUnitCallbackEvents = vi.fn();
 
 
   describe('createQunitReport', () => {
@@ -311,7 +315,7 @@ describe('QUnit Browser Script', () => {
       // Save and replace functions that are part of the SUT's scope if necessary
       // For this test, we assume setQunitReportParentWindow and setQUnitCallbackEvents
       // are available in the scope where createQunitReport is executed.
-      // We'll mock them using jest.fn() assigned to global or a specific context if needed.
+      // We'll mock them using vi.fn() assigned to global or a specific context if needed.
       // Here, we'll make them available on 'global' for the 'this' context of createQunitReport.
       // @ts-ignore
       originalSetQunitReportParentWindow = global.setQunitReportParentWindow;
@@ -424,8 +428,8 @@ describe('QUnit Browser Script', () => {
   }
 
   // Mocks for functions called by the 'done' callback
-  const mockBuildModules = jest.fn();
-  const mockSetSuiteReport = jest.fn();
+  const mockBuildModules = vi.fn();
+  const mockSetSuiteReport = vi.fn();
 
   describe('setQUnitCallbackEvents', () => {
     let qUnitInstance: QUnitService;
@@ -438,10 +442,10 @@ describe('QUnit Browser Script', () => {
     beforeEach(() => {
       // Initialize QUnit and _wdioQunitService on window for each test
       qUnitInstance = {
-        log: jest.fn(),
-        testDone: jest.fn(),
-        moduleDone: jest.fn(),
-        done: jest.fn(),
+        log: vi.fn(),
+        testDone: vi.fn(),
+        moduleDone: vi.fn(),
+        done: vi.fn(),
         config: { currentModule: { name: '', tests: [], moduleId: ''} }, // Add any other required QUnit properties
       };
       // @ts-ignore
@@ -466,12 +470,12 @@ describe('QUnit Browser Script', () => {
 
       originalConsoleError = console.error;
       // @ts-ignore
-      console.error = jest.fn();
+      console.error = vi.fn();
 
 
       mockBuildModules.mockClear();
       mockSetSuiteReport.mockClear();
-      global.window.setTimeout.mockClear().mockImplementation((fn) => fn());
+      global.window.setTimeout.mockClear().mockImplementation((fn: (...args: any[]) => void) => fn());
     });
 
     afterEach(() => {
@@ -517,21 +521,21 @@ describe('QUnit Browser Script', () => {
       });
 
       it('log callback should add assertion details to collect.assertions', () => {
-        const logCallback = qUnitInstance.log.mock.calls[0][0];
+        const logCallback = (qUnitInstance.log as vi.Mock).mock.calls[0][0];
         const assertionDetails = { result: true, message: 'Test assertion' } as QUnit.LogDetails;
         logCallback(assertionDetails);
         expect(wdioServiceInstance.collect.assertions).toContain(assertionDetails);
       });
 
       it('testDone callback should add test details to collect.tests', () => {
-        const testDoneCallback = qUnitInstance.testDone.mock.calls[0][0];
+        const testDoneCallback = (qUnitInstance.testDone as vi.Mock).mock.calls[0][0];
         const testDetails = { name: 'Test A', duration: 10 } as QUnit.TestDoneDetails;
         testDoneCallback(testDetails);
         expect(wdioServiceInstance.collect.tests).toContain(testDetails);
       });
 
       it('moduleDone callback should add module details to collect.modules', () => {
-        const moduleDoneCallback = qUnitInstance.moduleDone.mock.calls[0][0];
+        const moduleDoneCallback = (qUnitInstance.moduleDone as vi.Mock).mock.calls[0][0];
         const moduleDetails = { name: 'Module X' } as QUnit.ModuleDoneDetails;
         moduleDoneCallback(moduleDetails);
         expect(wdioServiceInstance.collect.modules).toContain(moduleDetails);
@@ -542,7 +546,7 @@ describe('QUnit Browser Script', () => {
         const doneDetails: QUnit.DoneDetails = { runtime: 500, total: 10, passed: 8, failed: 2 };
 
         beforeEach(async () => {
-          doneCallback = qUnitInstance.done.mock.calls[0][0];
+          doneCallback = (qUnitInstance.done as vi.Mock).mock.calls[0][0];
           mockBuildModules.mockResolvedValue(undefined); // Default success for buildModules
         });
 
@@ -565,7 +569,7 @@ describe('QUnit Browser Script', () => {
           expect(console.error).toHaveBeenCalledWith(expect.stringContaining(error.message), error.stack);
           expect(global.window.setTimeout).toHaveBeenCalledWith(expect.any(Function), 0);
           // Simulate setTimeout execution
-          const timeoutFn = global.window.setTimeout.mock.calls[0][0];
+          const timeoutFn = (global.window.setTimeout as vi.Mock).mock.calls[0][0];
           timeoutFn();
           expect(mockSetSuiteReport).toHaveBeenCalledTimes(1);
         });
@@ -826,7 +830,7 @@ describe('QUnit Browser Script', () => {
   }
 
   // Mock for buildTests, which is called by buildModules
-  const mockBuildTests = jest.fn();
+  const mockBuildTests = vi.fn();
 
   describe('buildModules', () => {
     let wdioServiceInstance: WdioQunitService;
@@ -1029,7 +1033,7 @@ describe('QUnit Browser Script', () => {
   }
 
   // Mock for buildAssertions, which is called by buildTests
-  const mockBuildAssertions = jest.fn();
+  const mockBuildAssertions = vi.fn();
 
   describe('buildTests', () => {
     let wdioServiceInstance: WdioQunitService;
@@ -1265,9 +1269,9 @@ describe('QUnit Browser Script', () => {
         this.parent._wdioQunitService = {
           collect: { modules: [], tests: [], assertions: [] }, // Minimal collect state
           suiteReport: { // Minimal suiteReport, may need more properties if parent aggregates
-            suiteId: this.parent.crypto.randomUUID(), // Parent gets its own ID
-            name: this.parent.location.href,
-            fullName: [this.parent.location.href],
+            suiteId: (this.parent as any).crypto.randomUUID(), // Parent gets its own ID
+            name: (this.parent as any).location.href,
+            fullName: [(this.parent as any).location.href],
             tests: [],
             suites: [], // This is where iframe results will be added
             duration: 0,
@@ -1336,7 +1340,7 @@ describe('QUnit Browser Script', () => {
         document: {}, // Presence of document indicates it's a valid window context
         _wdioQunitService: undefined, // Will be configured per test
         location: { href: 'http://parent.com' }, // Mock parent location
-        crypto: { randomUUID: jest.fn(() => 'mock-parent-uuid') }, // Mock parent UUID
+        crypto: { randomUUID: vi.fn(() => 'mock-parent-uuid') }, // Mock parent UUID
       };
 
       // Default: window is not an iframe
@@ -1345,7 +1349,7 @@ describe('QUnit Browser Script', () => {
       // @ts-ignore
       global.window.parent = global.window;
       
-      jest.clearAllMocks(); // Clear mocks including crypto.randomUUID from global window
+      vi.clearAllMocks(); // Clear mocks including crypto.randomUUID from global window
       // Ensure child window's randomUUID is also controlled if needed, though not directly used by this func
       global.window.crypto.randomUUID.mockReturnValue('mock-child-uuid');
     });
