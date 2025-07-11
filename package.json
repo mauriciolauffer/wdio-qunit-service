@@ -29,6 +29,7 @@
     "test:ui5:unit": "wdio run examples/wdio.conf.js --suite ui5-unit",
     "test:ui5:opa": "wdio run examples/wdio.conf.js --suite ui5-opa",
     "test:ui5:testrunner": "wdio run examples/wdio.conf.js --suite ui5-testrunner",
+    "test:ui5:legacy:free": "wdio run examples/wdio.conf.js --suite ui5-legacy-free",
     "test:qunit": "wdio run examples/wdio.conf.js --suite qunit",
     "test:no:specs": "wdio run examples/wdio.no-specs.conf.js",
     "test:ui5:app": "wdio run examples/openui5-sample-app/webapp/test/wdio.conf.js",
