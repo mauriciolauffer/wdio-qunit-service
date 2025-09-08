@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/mauriciolauffer/wdio-qunit-service/compare/v2.0.0...v2.0.1) (2025-09-08)
+
+
+### Bug Fixes
+
+* Mitigate error - maximum call stack size exceeded ([#47](https://github.com/mauriciolauffer/wdio-qunit-service/issues/47)) ([e06e05b](https://github.com/mauriciolauffer/wdio-qunit-service/commit/e06e05b4987b6ed0c1e054bec3a9ecc5bb72ad04))
+
 ## [2.0.0](https://github.com/mauriciolauffer/wdio-qunit-service/compare/v1.3.0...v2.0.0) (2025-04-29)
 
 
