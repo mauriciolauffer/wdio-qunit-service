@@ -168,8 +168,8 @@ export function injectQUnitReport(emit: (result: string) => void) {
           message: assertionDone.message,
           todo: !!assertionDone.todo,
           source: assertionDone.source,
-          actual: assertionDone.actual,
-          expected: assertionDone.expected,
+          actual: assertionDone.result ? true : assertionDone.actual,
+          expected: assertionDone.result ? true : assertionDone.expected,
           negative: !!assertionDone.negative,
         };
       });
