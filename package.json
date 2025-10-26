@@ -34,6 +34,7 @@
     "test:no:specs": "wdio run examples/wdio.no-specs.conf.js",
     "test:ui5:app": "wdio run examples/openui5-sample-app/webapp/test/wdio.conf.js",
     "test:ui5:app:nospecs": "wdio run examples/openui5-sample-app-no-specs/webapp/test/wdio.conf.js",
+    "test:ui5:ts:app": "wdio run examples/ui5-typescript-helloworld/webapp/test/wdio.conf.js",
     "lint": "prettier . --check --cache && eslint --cache",
     "lint:ci": "eslint --quiet -f @microsoft/eslint-formatter-sarif -o eslint.sarif",
     "pretty": "prettier . --write --cache"
