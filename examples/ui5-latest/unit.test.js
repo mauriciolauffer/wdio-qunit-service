@@ -15,7 +15,7 @@ describe("QUnit unit test page", function () {
 
   it("should pass TypeScript To-Do List unit tests - REMOTE - UI5 latest", async function () {
     await browser.url(
-      "https://ui5.sap.com/test-resources/sap/m/demokit/sample/TsTodos/test/unit/Test.qunit.html?testsuite=test-resources/sap/m/demokit/sample/TsTodos/test/unit/testsuite.qunit&test=unitTests",
+      "https://sap-samples.github.io/ui5-typescript-helloworld/test/Test.qunit.html?testsuite=test-resources/ui5/typescript/helloworld/testsuite.qunit&test=unit/unitTests",
     );
     await browser.getQUnitResults();
   });

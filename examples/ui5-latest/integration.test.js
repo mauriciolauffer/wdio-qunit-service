@@ -14,6 +14,13 @@ describe("QUnit OPA5 integration test page", function () {
     await browser.getQUnitResults();
   });
 
+  it("should pass TypeScript To-Do List unit tests - REMOTE - UI5 latest", async function () {
+    await browser.url(
+      "https://sap-samples.github.io/ui5-typescript-helloworld/test/Test.qunit.html?testsuite=test-resources/ui5/typescript/helloworld/testsuite.qunit&test=integration/opaTests",
+    );
+    await browser.getQUnitResults();
+  });
+
   it("should pass Team Calendar integration tests - REMOTE - UI5 latest", async function () {
     await browser.url(
       "https://ui5.sap.com/test-resources/sap/m/demokit/teamCalendar/webapp/test/Test.qunit.html?testsuite=test-resources%2Fsap%2Fm%2Fdemokit%2FteamCalendar%2Fwebapp%2Ftestsuite.qunit&test=integration%2FopaTests",
