@@ -25,7 +25,10 @@ jobs:
           cache: pnpm
       - run: pnpm i --prefer-offline
       - run: pnpm run build
-      - run: pnpm run test
+      - run: pnpm run test:wdio
+      - run: pnpm run test:qunit
+      - run: pnpm run test:ui5:unit
+      - run: pnpm run test:ui5:opa
       # - run: pnpm run test:no:specs
       - name: Test Report
         uses: dorny/test-reporter@v2

@@ -2,6 +2,11 @@ import { cpus } from "node:os";
 import { defineConfig } from "@wdio/config";
 export const config = defineConfig({
   specs: ["./**/*.test.ts", "./**/*.test.js", "./**/*.test.cjs"],
+  exclude: [
+    "./openui5-*/**",
+    "./ui5-typescript-helloworld/**",
+    "./qunit-fail/**",
+  ],
 
   suites: {
     "ui5-1.96": ["./ui5-1.96/**/*.test.js"],
@@ -22,21 +27,10 @@ export const config = defineConfig({
     "ui5-testrunner": ["./ui5-*/**/testrunner.test.js"],
     "ui5-legacy-free": ["./ui5-*-legacy-free/**/*.test.js"],
     "ui5-opa": ["./ui5-*/**/integration.test.js"],
-    "ui5-unit": [
-      "./ui5-*/**/unit.test.js",
-      "./wdio-*/**/*.test.js",
-      "./wdio-*/**/*.test.cjs",
-    ],
-    ui5: [
-      "./ui5-*/**/*.test.js",
-      "./wdio-*/**/*.test.js",
-      "./wdio-*/**/*.test.cjs",
-    ],
-    qunit: [
-      "./qunit-v*/**/*.test.ts",
-      "./qunit-iframes/unit.test.ts",
-      "./qunit-preconfiguration/*.test.ts",
-    ],
+    "ui5-unit": ["./ui5-*/**/unit.test.js"],
+    ui5: ["./ui5-*/**/*.test.js"],
+    qunit: ["./qunit-*/**/*.test.ts"],
+    wdio: ["./wdio-*/**/*.test.js", "./wdio-*/**/*.test.cjs"],
   },
 
   capabilities: [

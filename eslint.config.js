@@ -6,7 +6,12 @@ import mochaPlugin from "eslint-plugin-mocha";
 
 export default tseslint.config(
   {
-    ignores: ["dist/", "examples/openui5-sample-app*", "**/coverage/"],
+    ignores: [
+      "dist/",
+      "examples/openui5-sample-app*",
+      "examples/ui5-typescript-helloworld",
+      "**/coverage/",
+    ],
   },
   {
     extends: [config, tseslint.configs.strict],
