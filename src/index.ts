@@ -5,7 +5,7 @@ import { URL } from "node:url";
 import logger from "@wdio/logger";
 import { injectQUnitReport, getQUnitSuiteReport } from "./qunit-browser.js";
 import { sharedContext } from "./sharedContext.js";
-import { generateTestCases } from "./mapper.js";
+import { transformQUnitResults } from "./reporter.js";
 
 const log = logger("wdio-qunit-service");
 
@@ -80,10 +80,81 @@ async function getQUnitResults(
 ): Promise<WdioQunitService.SuiteReport[]> {
   log.info("Getting QUnit results...");
   const qunitResults = await getQunitResultsFromBrowser(this);
-  qunitResults.forEach((result) => {
-    generateTestCases(result);
+  const transformedResults = transformQUnitResults(qunitResults);
+  transformedResults.forEach((result) => {
+    generateWdioTestCases(result);
   });
-  return qunitResults;
+  return transformedResults;
+}
+
+function generateWdioTestCases(qunitResults: WdioQunitService.SuiteReport) {
+  log.debug("Generating test cases...");
+  convertQunitModules(qunitResults.childSuites);
+  if (qunitResults.tests.length > 0) {
+    describe("...", function mappingQunitTestsWithoutModule() {
+      convertQunitTests(qunitResults.tests);
+    });
+  }
+  if (qunitResults.aborted) {
+    describe(`Execution Aborted`, function mappingExecutionAborted() {
+      it("global failure", async function mappingQunitResultSuccess() {
+        await expect(qunitResults.aborted).toBeUndefined();
+      });
+    });
+  }
+  describe(`Injected WDIO QUnit Reporter`, function mappingQunitReporter() {
+    it(qunitResults.name, async function mappingQunitResultSuccess() {
+      await expect(qunitResults.success).toEqual(true);
+    });
+  });
+}
+
+function convertQunitModules(
+  qunitModules: WdioQunitService.ChildSuite[],
+): void {
+  for (const qunitChildSuite of qunitModules) {
+    log.debug(`Creating "describe" ${qunitChildSuite.name}`);
+    describe(qunitChildSuite.name || "...", function mappingQunitModules() {
+      convertQunitTests(qunitChildSuite.tests);
+      convertQunitModules(qunitChildSuite.childSuites);
+    });
+  }
+}
+
+function convertQunitTests(qunitTests: WdioQunitService.TestReport[]): void {
+  for (const qunitTest of qunitTests) {
+    log.debug(`Creating "it" ${qunitTest.name}`);
+    if (qunitTest.skipped) {
+      it.skip(qunitTest.name, function mappingQunitTestsSkipped() {
+        log.debug(`Skipping ${qunitTest.name}`);
+      });
+    } else {
+      it(qunitTest.name, async function mappingQunitTests() {
+        for (const qunitAssertion of qunitTest.assertions) {
+          log.debug(
+            `Creating "expect" ${qunitTest.name}.${qunitAssertion?.message}`,
+          );
+          if (!qunitAssertion.success) {
+            log.error(`QUnit Test: ${qunitTest.suiteName}.${qunitTest.name}`);
+            log.error(`Expected: ${qunitAssertion.expected}`);
+            log.error(`Received: ${qunitAssertion.actual}`);
+            log.error(`Message: ${qunitAssertion.message}`);
+            log.error(`Source: ${qunitAssertion.source}`);
+            if (qunitAssertion.negative) {
+              await expect(qunitAssertion.actual).not.toEqual(
+                qunitAssertion.expected,
+              );
+            } else {
+              await expect(qunitAssertion.actual).toEqual(
+                qunitAssertion.expected,
+              );
+            }
+          }
+          await expect(qunitAssertion.success).toEqual(true); // It also works as a failsafe to catch-all
+        }
+      });
+    }
+  }
 }
 
 export default class QUnitService implements Services.ServiceInstance {
