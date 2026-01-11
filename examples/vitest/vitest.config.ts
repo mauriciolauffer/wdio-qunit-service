@@ -1,5 +1,6 @@
 import { defineConfig } from "vitest/config";
 import { qunit } from "wdio-qunit-service/vitest";
+import { playwright } from "@vitest/browser-playwright";
 
 export default defineConfig({
   plugins: [
@@ -10,5 +11,11 @@ export default defineConfig({
   ],
   test: {
     include: [".tmp/vitest-qunit.test.ts"],
+    browser: {
+      enabled: true,
+      name: "chromium",
+      provider: () => playwright,
+      headless: true,
+    },
   },
 });

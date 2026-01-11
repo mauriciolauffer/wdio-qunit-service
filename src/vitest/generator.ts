@@ -1,34 +1,30 @@
-import type WdioQunitService from "../types/wdio.js";
+import type { QUnitPluginOptions } from "./types.js";
+import { getQUnitSuiteReport } from "../qunit-browser.js";
 
 /**
  * Generates Vitest test code from QUnit results.
- * @param {WdioQunitService.SuiteReport[]} results The QUnit results.
+ * @param {QUnitPluginOptions} options The plugin options.
  * @returns {string} The Vitest test code.
  */
-export function generateVitestTests(
-  results: WdioQunitService.SuiteReport[],
-): string {
-  const tests = results
-    .map((result) => {
+export function generateVitestTests(options: QUnitPluginOptions): string {
+  const tests = options.paths
+    .map((path) => {
+      const url = new URL(path, options.baseUrl).toString();
       return `
-      import { describe, it, expect } from 'vitest';
+      import { describe, it, expect, vi } from 'vitest';
+      import { browser } from '@vitest/browser';
 
-      describe('${result.name}', () => {
-        ${result.tests
-          .map(
-            (test) => `
-          it('${test.name}', () => {
-            ${test.assertions
-              .map(
-                (assertion) => `
-              expect(${assertion.actual}).toEqual(${assertion.expected});
-            `,
-              )
-              .join("\n")}
+      describe('QUnit tests for ${path}', () => {
+        it('should pass all tests', async () => {
+          await browser.visit('${url}');
+          await browser.executeScript(\`(${getQUnitSuiteReport.toString()})\`);
+          await vi.waitFor(async () => {
+            const completed = await browser.executeScript(() => window._wdioQunitService?.results?.[0]?.completed);
+            expect(completed).toBe(true);
           });
-        `,
-          )
-          .join("\n")}
+          const results = await browser.executeScript(() => window._wdioQunitService.results);
+          expect(results[0].failed).toBe(0);
+        });
       });
     `;
     })
