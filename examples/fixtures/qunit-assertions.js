@@ -190,9 +190,5 @@ QUnit.test("Should pass assert.true", (assert) => {
 });
 
 QUnit.test("Should NOT fail when assert a function", (assert) => {
-  assert.notEqual(
-    QUnit.test,
-    undefined,
-    "Ensure it does not fail when assert a functions",
-  );
+  assert.notEqual(QUnit.test, undefined, "Ensure it does not fail when assert a functions");
 });

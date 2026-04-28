@@ -12,19 +12,12 @@ const log = logger("wdio-qunit-service");
 /**
  * Get QUnit service configuration
  */
-function getServiceConfig(
-  services?: Services.ServiceEntry[],
-): WdioQunitService.ServiceOption {
+function getServiceConfig(services?: Services.ServiceEntry[]): WdioQunitService.ServiceOption {
   return services
-    ?.filter(
-      (service) =>
-        Array.isArray(service) && service?.find((option) => option === "qunit"),
-    )
+    ?.filter((service) => Array.isArray(service) && service?.find((option) => option === "qunit"))
     .flat()
     .filter(
-      (service) =>
-        service &&
-        (service as WdioQunitService.ServiceOption)?.paths?.length > 0,
+      (service) => service && (service as WdioQunitService.ServiceOption)?.paths?.length > 0,
     )?.[0] as WdioQunitService.ServiceOption;
 }
 
@@ -59,9 +52,7 @@ async function getQunitResultsFromBrowser(
     () => {
       return browserInstance.execute(
         () =>
-          window?._wdioQunitService?.results?.filter?.(
-            (result) => !result.completed,
-          ).length === 0,
+          window?._wdioQunitService?.results?.filter?.((result) => !result.completed).length === 0,
       );
     },
     {
@@ -75,9 +66,7 @@ async function getQunitResultsFromBrowser(
 /**
  * Get QUnit results
  */
-async function getQUnitResults(
-  this: WebdriverIO.Browser,
-): Promise<WdioQunitService.SuiteReport[]> {
+async function getQUnitResults(this: WebdriverIO.Browser): Promise<WdioQunitService.SuiteReport[]> {
   log.info("Getting QUnit results...");
   const qunitResults = await getQunitResultsFromBrowser(this);
   qunitResults.forEach((result) => {
@@ -93,10 +82,7 @@ export default class QUnitService implements Services.ServiceInstance {
     browserInstance: WebdriverIO.Browser,
   ): Promise<void> {
     log.debug("Executing before hook...");
-    browserInstance.addCommand(
-      "getQUnitResults",
-      getQUnitResults.bind(browserInstance),
-    );
+    browserInstance.addCommand("getQUnitResults", getQUnitResults.bind(browserInstance));
     const script = await browser.addInitScript(injectQUnitReport);
     script.on("data", (href: string) => {
       log.warn("QUnit reporter injected at", href);
@@ -106,10 +92,7 @@ export default class QUnitService implements Services.ServiceInstance {
   beforeSession(config: Omit<WebdriverIO.Config, "capabilities">): void {
     log.debug("Executing beforeSession hook...");
     const serviceConfig = getServiceConfig(config?.services ?? []);
-    const files = getQUnitHtmlFiles(
-      serviceConfig?.paths ?? [],
-      config?.baseUrl,
-    );
+    const files = getQUnitHtmlFiles(serviceConfig?.paths ?? [], config?.baseUrl);
     if (files.length > 0) {
       sharedContext.qunitHtmlFiles = files;
     }
@@ -120,10 +103,7 @@ class CustomLauncher implements Services.ServiceInstance {
   onPrepare(config: WebdriverIO.Config): void {
     log.debug("Executing onPrepare launcher...");
     const serviceConfig = getServiceConfig(config?.services);
-    const files = getQUnitHtmlFiles(
-      serviceConfig?.paths ?? [],
-      config?.baseUrl,
-    );
+    const files = getQUnitHtmlFiles(serviceConfig?.paths ?? [], config?.baseUrl);
     if (files.length > 0) {
       config.specs?.push(join(import.meta.dirname, "default.test.js"));
     }

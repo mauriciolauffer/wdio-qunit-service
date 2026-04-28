@@ -2,26 +2,32 @@
   "name": "wdio-qunit-service",
   "version": "2.0.1",
   "description": "WebdriverIO service for running QUnit browser-based tests and dinamically converting them to wdio test suites.",
-  "author": "Mauricio Lauffer",
-  "license": "MIT",
-  "homepage": "https://github.com/mauriciolauffer/wdio-qunit-service#readme",
-  "type": "module",
-  "packageManager": "pnpm@9.15.4",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "files": [
-    "dist"
-  ],
   "keywords": [
-    "ui5",
     "openui5",
+    "qunit",
     "sapui5",
+    "ui5",
     "wdi5",
     "wdio",
     "wdio-plugin",
-    "wdio-service",
-    "qunit"
+    "wdio-service"
   ],
+  "homepage": "https://github.com/mauriciolauffer/wdio-qunit-service#readme",
+  "bugs": {
+    "url": "https://github.com/mauriciolauffer/wdio-qunit-service/issues"
+  },
+  "license": "MIT",
+  "author": "Mauricio Lauffer",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mauriciolauffer/wdio-qunit-service.git"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "test": "wdio run examples/wdio.conf.js --suite wdio --suite qunit --suite ui5",
@@ -37,9 +43,8 @@
     "test:ui5:app:nospecs": "wdio run examples/openui5-sample-app-no-specs/webapp/test/wdio.conf.js",
     "test:ui5:ts:app": "wdio run examples/ui5-typescript-helloworld/webapp/test/wdio.conf.js",
     "test:ui5:ts:app:nospecs": "wdio run examples/ui5-typescript-helloworld/webapp/test/wdio.no-specs.conf.js",
-    "lint": "prettier . --check --cache && eslint --cache",
-    "lint:ci": "eslint --quiet -f @microsoft/eslint-formatter-sarif -o eslint.sarif",
-    "pretty": "prettier . --write --cache"
+    "lint": "oxfmt --check && oxlint",
+    "format": "oxfmt"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.10",
@@ -49,16 +54,11 @@
     "@wdio/junit-reporter": "^9.27.0",
     "@wdio/static-server-service": "^9.27.0",
     "@wdio/types": "^9.27.0",
-    "eslint": "^9.39.4",
-    "eslint-config-mlauffer-nodejs": "^3.1.1",
-    "eslint-plugin-mocha": "^11.2.0",
-    "eslint-plugin-wdio": "^9.27.0",
-    "globals": "^16.5.0",
-    "prettier": "^3.8.3",
+    "oxfmt": "^0.47.0",
+    "oxlint": "^1.62.0",
     "ts-node": "^10.9.2",
     "tsx": "^4.21.0",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.59.1",
     "vitest": "^4.1.5",
     "wdio-monocart-service": "^1.0.3",
     "wdio-qunit-service": "link:"
@@ -71,14 +71,8 @@
     "@wdio/mocha-framework": "^9",
     "@wdio/spec-reporter": "^9"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/mauriciolauffer/wdio-qunit-service.git"
-  },
-  "bugs": {
-    "url": "https://github.com/mauriciolauffer/wdio-qunit-service/issues"
-  },
   "engines": {
     "pnpm": ">=9"
-  }
+  },
+  "packageManager": "pnpm@9.15.4"
 }

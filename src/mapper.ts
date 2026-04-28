@@ -31,9 +31,7 @@ export function generateTestCases(qunitResults: WdioQunitService.SuiteReport) {
 /**
  * Convert QUnit Modules into 'describe' blocks
  */
-function convertQunitModules(
-  qunitModules: WdioQunitService.ChildSuite[],
-): void {
+function convertQunitModules(qunitModules: WdioQunitService.ChildSuite[]): void {
   for (const qunitChildSuite of qunitModules) {
     log.debug(`Creating "describe" ${qunitChildSuite.name}`);
     describe(qunitChildSuite.name || "...", function mappingQunitModules() {
@@ -56,9 +54,7 @@ function convertQunitTests(qunitTests: WdioQunitService.TestReport[]): void {
     } else {
       it(qunitTest.name, async function mappingQunitTests() {
         for (const qunitAssertion of qunitTest.assertions) {
-          log.debug(
-            `Creating "expect" ${qunitTest.name}.${qunitAssertion?.message}`,
-          );
+          log.debug(`Creating "expect" ${qunitTest.name}.${qunitAssertion?.message}`);
           if (!qunitAssertion.success) {
             log.error(`QUnit Test: ${qunitTest.suiteName}.${qunitTest.name}`);
             log.error(`Expected: ${qunitAssertion.expected}`);
@@ -66,13 +62,9 @@ function convertQunitTests(qunitTests: WdioQunitService.TestReport[]): void {
             log.error(`Message: ${qunitAssertion.message}`);
             log.error(`Source: ${qunitAssertion.source}`);
             if (qunitAssertion.negative) {
-              await expect(qunitAssertion.actual).not.toEqual(
-                qunitAssertion.expected,
-              );
+              await expect(qunitAssertion.actual).not.toEqual(qunitAssertion.expected);
             } else {
-              await expect(qunitAssertion.actual).toEqual(
-                qunitAssertion.expected,
-              );
+              await expect(qunitAssertion.actual).toEqual(qunitAssertion.expected);
             }
           }
           await expect(qunitAssertion.success).toEqual(true); // It also works as a failsafe to catch-all
