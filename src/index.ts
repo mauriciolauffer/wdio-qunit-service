@@ -110,5 +110,5 @@ class CustomLauncher implements Services.ServiceInstance {
   }
 }
 
-export { WdioQunitService };
+export { WdioQunitService, getServiceConfig, getQUnitHtmlFiles };
 export const launcher = CustomLauncher;

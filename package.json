@@ -43,6 +43,8 @@
     "test:ui5:app:nospecs": "wdio run examples/openui5-sample-app-no-specs/webapp/test/wdio.conf.js",
     "test:ui5:ts:app": "wdio run examples/ui5-typescript-helloworld/webapp/test/wdio.conf.js",
     "test:ui5:ts:app:nospecs": "wdio run examples/ui5-typescript-helloworld/webapp/test/wdio.no-specs.conf.js",
+    "test:unit": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "lint": "oxfmt --check && oxlint",
     "format": "oxfmt"
   },
@@ -50,6 +52,7 @@
     "@types/mocha": "^10.0.10",
     "@types/node": "^24.12.2",
     "@types/qunit": "^2.19.13",
+    "@vitest/coverage-v8": "^4.1.5",
     "@wdio/config": "^9.27.0",
     "@wdio/junit-reporter": "^9.27.0",
     "@wdio/static-server-service": "^9.27.0",

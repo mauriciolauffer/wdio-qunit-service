@@ -5,9 +5,10 @@
       "WebFetch(domain:oxc.rs)",
       "WebFetch(domain:www.npmjs.com)",
       "WebSearch",
-      "Bash(npm view *)",
-      "Bash(pnpm install *)",
-      "Bash(pnpm run *)"
+      "Bash(npm:*)",
+      "Bash(pnpm:*)",
+      "Bash(git:*)",
+      "Bash(node:*)"
     ]
   }
 }
