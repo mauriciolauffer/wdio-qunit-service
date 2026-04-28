@@ -3,7 +3,9 @@ import type WdioQunitService from "../../src/types/wdio.js";
 
 // generateTestCases (called by getQUnitResults) uses Mocha globals injected by WDIO at runtime.
 const describeMock = vi.fn((_name: string, fn: () => void) => fn());
-const itMock = vi.fn((_name: string, fn?: () => Promise<void>) => fn?.()) as typeof vi.fn & { skip: ReturnType<typeof vi.fn> };
+const itMock = vi.fn((_name: string, fn?: () => Promise<void>) => fn?.()) as typeof vi.fn & {
+  skip: ReturnType<typeof vi.fn>;
+};
 itMock.skip = vi.fn();
 const expectMock = vi.fn(() => ({ toEqual: vi.fn(), toBeUndefined: vi.fn() }));
 (globalThis as unknown as Record<string, unknown>).describe = describeMock;
@@ -15,8 +17,12 @@ vi.mock("@wdio/logger", () => ({
   default: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() }),
 }));
 
-const { getServiceConfig, getQUnitHtmlFiles, default: QUnitService, launcher: CustomLauncher } =
-  await import("../../src/index.js");
+const {
+  getServiceConfig,
+  getQUnitHtmlFiles,
+  default: QUnitService,
+  launcher: CustomLauncher,
+} = await import("../../src/index.js");
 
 describe("getServiceConfig", () => {
   it("returns undefined when services is undefined", () => {
@@ -52,7 +58,12 @@ describe("getServiceConfig", () => {
   it("picks first matching qunit entry", () => {
     const first = { paths: ["/first.html"] };
     const second = { paths: ["/second.html"] };
-    expect(getServiceConfig([["qunit", first], ["qunit", second]])).toEqual(first);
+    expect(
+      getServiceConfig([
+        ["qunit", first],
+        ["qunit", second],
+      ]),
+    ).toEqual(first);
   });
 });
 
@@ -171,7 +182,9 @@ describe("QUnitService", () => {
 
     it("data event handler logs the href", async () => {
       let dataHandler: ((href: string) => void) | undefined;
-      const on = vi.fn((event: string, cb: (href: string) => void) => { if (event === "data") dataHandler = cb; });
+      const on = vi.fn((event: string, cb: (href: string) => void) => {
+        if (event === "data") dataHandler = cb;
+      });
       const addCommand = vi.fn();
       const addInitScript = vi.fn().mockResolvedValue({ on });
       const browserInstance = { addCommand, addInitScript } as unknown as WebdriverIO.Browser;
@@ -192,17 +205,29 @@ describe("QUnitService", () => {
   describe("getQUnitResults (browser command)", () => {
     it("waits for QUnit completion and returns results", async () => {
       const suiteReport: WdioQunitService.SuiteReport = {
-        suiteId: "s1", completed: true, success: true, runtime: 10,
-        name: "http://localhost/test.html", tests: [], childSuites: [],
+        suiteId: "s1",
+        completed: true,
+        success: true,
+        runtime: 10,
+        name: "http://localhost/test.html",
+        tests: [],
+        childSuites: [],
       };
 
       const execute = vi.fn().mockResolvedValueOnce(true).mockResolvedValue([suiteReport]);
-      const waitUntil = vi.fn(async (fn: () => Promise<unknown>) => { await fn(); });
+      const waitUntil = vi.fn(async (fn: () => Promise<unknown>) => {
+        await fn();
+      });
       const addCommand = vi.fn();
       const on = vi.fn();
       const addInitScript = vi.fn().mockResolvedValue({ on });
 
-      const browserInstance = { addCommand, addInitScript, waitUntil, execute } as unknown as WebdriverIO.Browser;
+      const browserInstance = {
+        addCommand,
+        addInitScript,
+        waitUntil,
+        execute,
+      } as unknown as WebdriverIO.Browser;
       (globalThis as unknown as { browser: unknown }).browser = browserInstance;
 
       const service = new QUnitService();
@@ -213,7 +238,9 @@ describe("QUnitService", () => {
       );
 
       // extract the registered command and call it bound to the browser instance
-      const registeredFn = (addCommand.mock.calls[0] as [string, () => Promise<WdioQunitService.SuiteReport[]>])[1];
+      const registeredFn = (
+        addCommand.mock.calls[0] as [string, () => Promise<WdioQunitService.SuiteReport[]>]
+      )[1];
       const results = await registeredFn.call(browserInstance);
 
       expect(waitUntil).toHaveBeenCalled();

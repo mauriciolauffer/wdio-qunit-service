@@ -22,7 +22,9 @@ const { generateTestCases } = await import("../../src/mapper.js");
 
 import type WdioQunitService from "../../src/types/wdio.js";
 
-function makeAssertion(overrides?: Partial<WdioQunitService.AssertionReport>): WdioQunitService.AssertionReport {
+function makeAssertion(
+  overrides?: Partial<WdioQunitService.AssertionReport>,
+): WdioQunitService.AssertionReport {
   return {
     message: "assert ok",
     success: true,
@@ -48,7 +50,9 @@ function makeTest(overrides?: Partial<WdioQunitService.TestReport>): WdioQunitSe
   };
 }
 
-function makeChildSuite(overrides?: Partial<WdioQunitService.ChildSuite>): WdioQunitService.ChildSuite {
+function makeChildSuite(
+  overrides?: Partial<WdioQunitService.ChildSuite>,
+): WdioQunitService.ChildSuite {
   return {
     name: "Module A",
     success: true,
@@ -59,7 +63,9 @@ function makeChildSuite(overrides?: Partial<WdioQunitService.ChildSuite>): WdioQ
   };
 }
 
-function makeSuiteReport(overrides?: Partial<WdioQunitService.SuiteReport>): WdioQunitService.SuiteReport {
+function makeSuiteReport(
+  overrides?: Partial<WdioQunitService.SuiteReport>,
+): WdioQunitService.SuiteReport {
   return {
     suiteId: "s1",
     completed: true,
@@ -164,7 +170,12 @@ describe("generateTestCases", () => {
   });
 
   it("calls expect for a failed assertion without negative flag", async () => {
-    const assertion = makeAssertion({ success: false, negative: false, actual: "a", expected: "b" });
+    const assertion = makeAssertion({
+      success: false,
+      negative: false,
+      actual: "a",
+      expected: "b",
+    });
     const test = makeTest({ assertions: [assertion] });
     const suite = makeSuiteReport({ childSuites: [makeChildSuite({ tests: [test] })] });
     generateTestCases(suite);

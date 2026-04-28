@@ -2,7 +2,9 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import { getQUnitSuiteReport, injectQUnitReport } from "../../src/qunit-browser.js";
 import type WdioQunitService from "../../src/types/wdio.js";
 
-function makeSuiteReport(overrides?: Partial<WdioQunitService.SuiteReport>): WdioQunitService.SuiteReport {
+function makeSuiteReport(
+  overrides?: Partial<WdioQunitService.SuiteReport>,
+): WdioQunitService.SuiteReport {
   return {
     suiteId: "test-id",
     completed: true,
@@ -53,26 +55,28 @@ describe("getQUnitSuiteReport", () => {
 
   it("returns the results array from window._wdioQunitService", () => {
     const report = makeSuiteReport();
-    (globalThis as unknown as { window: { _wdioQunitService: WdioQunitService.Reporter } }).window = {
-      _wdioQunitService: {
-        collect: { modules: [], tests: [], assertions: [] },
-        suiteReport: report,
-        results: [report],
-      },
-    };
+    (globalThis as unknown as { window: { _wdioQunitService: WdioQunitService.Reporter } }).window =
+      {
+        _wdioQunitService: {
+          collect: { modules: [], tests: [], assertions: [] },
+          suiteReport: report,
+          results: [report],
+        },
+      };
     expect(getQUnitSuiteReport()).toEqual([report]);
   });
 
   it("returns multiple results when present", () => {
     const report1 = makeSuiteReport({ suiteId: "id-1", name: "http://localhost/a.html" });
     const report2 = makeSuiteReport({ suiteId: "id-2", name: "http://localhost/b.html" });
-    (globalThis as unknown as { window: { _wdioQunitService: WdioQunitService.Reporter } }).window = {
-      _wdioQunitService: {
-        collect: { modules: [], tests: [], assertions: [] },
-        suiteReport: report1,
-        results: [report1, report2],
-      },
-    };
+    (globalThis as unknown as { window: { _wdioQunitService: WdioQunitService.Reporter } }).window =
+      {
+        _wdioQunitService: {
+          collect: { modules: [], tests: [], assertions: [] },
+          suiteReport: report1,
+          results: [report1, report2],
+        },
+      };
     expect(getQUnitSuiteReport()).toEqual([report1, report2]);
   });
 });
@@ -135,10 +139,18 @@ describe("injectQUnitReport", () => {
   describe("QUnit.done callback (buildModules + setSuiteReport)", () => {
     function getCallbacks(qunit: QUnit) {
       const cbs: Record<string, (...args: unknown[]) => unknown> = {};
-      (qunit.log as ReturnType<typeof vi.fn>).mockImplementation((cb: unknown) => { cbs.log = cb as (...args: unknown[]) => unknown; });
-      (qunit.testDone as ReturnType<typeof vi.fn>).mockImplementation((cb: unknown) => { cbs.testDone = cb as (...args: unknown[]) => unknown; });
-      (qunit.moduleDone as ReturnType<typeof vi.fn>).mockImplementation((cb: unknown) => { cbs.moduleDone = cb as (...args: unknown[]) => unknown; });
-      (qunit.done as ReturnType<typeof vi.fn>).mockImplementation((cb: unknown) => { cbs.done = cb as (...args: unknown[]) => unknown; });
+      (qunit.log as ReturnType<typeof vi.fn>).mockImplementation((cb: unknown) => {
+        cbs.log = cb as (...args: unknown[]) => unknown;
+      });
+      (qunit.testDone as ReturnType<typeof vi.fn>).mockImplementation((cb: unknown) => {
+        cbs.testDone = cb as (...args: unknown[]) => unknown;
+      });
+      (qunit.moduleDone as ReturnType<typeof vi.fn>).mockImplementation((cb: unknown) => {
+        cbs.moduleDone = cb as (...args: unknown[]) => unknown;
+      });
+      (qunit.done as ReturnType<typeof vi.fn>).mockImplementation((cb: unknown) => {
+        cbs.done = cb as (...args: unknown[]) => unknown;
+      });
       return cbs;
     }
 
@@ -148,8 +160,22 @@ describe("injectQUnitReport", () => {
       injectQUnitReport(emit);
       assignQUnit(win, qunit);
 
-      const testDoneData = { testId: "t1", name: "test 1", module: "mod", failed: 0, passed: 1, runtime: 10, skipped: false };
-      const moduleDoneData = { name: "mod", failed: 0, passed: 1, runtime: 10, tests: [{ testId: "t1", name: "test 1" }] };
+      const testDoneData = {
+        testId: "t1",
+        name: "test 1",
+        module: "mod",
+        failed: 0,
+        passed: 1,
+        runtime: 10,
+        skipped: false,
+      };
+      const moduleDoneData = {
+        name: "mod",
+        failed: 0,
+        passed: 1,
+        runtime: 10,
+        tests: [{ testId: "t1", name: "test 1" }],
+      };
 
       cbs.testDone(testDoneData);
       cbs.moduleDone(moduleDoneData);
@@ -167,8 +193,22 @@ describe("injectQUnitReport", () => {
       injectQUnitReport(emit);
       assignQUnit(win, qunit);
 
-      const testDoneData = { testId: "t1", name: "test 1", module: "mod", failed: 1, passed: 0, runtime: 10, skipped: false };
-      const moduleDoneData = { name: "mod", failed: 1, passed: 0, runtime: 10, tests: [{ testId: "t1", name: "test 1" }] };
+      const testDoneData = {
+        testId: "t1",
+        name: "test 1",
+        module: "mod",
+        failed: 1,
+        passed: 0,
+        runtime: 10,
+        skipped: false,
+      };
+      const moduleDoneData = {
+        name: "mod",
+        failed: 1,
+        passed: 0,
+        runtime: 10,
+        tests: [{ testId: "t1", name: "test 1" }],
+      };
 
       cbs.testDone(testDoneData);
       cbs.moduleDone(moduleDoneData);
@@ -183,7 +223,16 @@ describe("injectQUnitReport", () => {
       injectQUnitReport(emit);
       assignQUnit(win, qunit);
 
-      const assertionData = { testId: "t1", result: true, message: "ok", source: "", actual: true, expected: true, todo: false, negative: false };
+      const assertionData = {
+        testId: "t1",
+        result: true,
+        message: "ok",
+        source: "",
+        actual: true,
+        expected: true,
+        todo: false,
+        negative: false,
+      };
       cbs.log(assertionData);
 
       expect(win._wdioQunitService.collect.assertions).toHaveLength(1);
@@ -196,8 +245,22 @@ describe("injectQUnitReport", () => {
       injectQUnitReport(emit);
       assignQUnit(win, qunit);
 
-      const testDoneData = { testId: "t1", name: "global test", module: "", failed: 0, passed: 1, runtime: 5, skipped: false };
-      const moduleDoneData = { name: "", failed: 0, passed: 1, runtime: 5, tests: [{ testId: "t1", name: "global test" }] };
+      const testDoneData = {
+        testId: "t1",
+        name: "global test",
+        module: "",
+        failed: 0,
+        passed: 1,
+        runtime: 5,
+        skipped: false,
+      };
+      const moduleDoneData = {
+        name: "",
+        failed: 0,
+        passed: 1,
+        runtime: 5,
+        tests: [{ testId: "t1", name: "global test" }],
+      };
 
       cbs.testDone(testDoneData);
       cbs.moduleDone(moduleDoneData);
@@ -213,8 +276,22 @@ describe("injectQUnitReport", () => {
       injectQUnitReport(emit);
       assignQUnit(win, qunit);
 
-      const testDoneData = { testId: "t2", name: "module test", module: "My Module", failed: 0, passed: 1, runtime: 5, skipped: false };
-      const moduleDoneData = { name: "My Module", failed: 0, passed: 1, runtime: 5, tests: [{ testId: "t2", name: "module test" }] };
+      const testDoneData = {
+        testId: "t2",
+        name: "module test",
+        module: "My Module",
+        failed: 0,
+        passed: 1,
+        runtime: 5,
+        skipped: false,
+      };
+      const moduleDoneData = {
+        name: "My Module",
+        failed: 0,
+        passed: 1,
+        runtime: 5,
+        tests: [{ testId: "t2", name: "module test" }],
+      };
 
       cbs.testDone(testDoneData);
       cbs.moduleDone(moduleDoneData);
@@ -230,9 +307,32 @@ describe("injectQUnitReport", () => {
       injectQUnitReport(emit);
       assignQUnit(win, qunit);
 
-      const assertionData = { testId: "t3", result: false, message: "not equal", source: "test.js:1", actual: "a", expected: "b", todo: false, negative: false };
-      const testDoneData = { testId: "t3", name: "failing test", module: "mod", failed: 1, passed: 0, runtime: 5, skipped: false };
-      const moduleDoneData = { name: "mod", failed: 1, passed: 0, runtime: 5, tests: [{ testId: "t3", name: "failing test" }] };
+      const assertionData = {
+        testId: "t3",
+        result: false,
+        message: "not equal",
+        source: "test.js:1",
+        actual: "a",
+        expected: "b",
+        todo: false,
+        negative: false,
+      };
+      const testDoneData = {
+        testId: "t3",
+        name: "failing test",
+        module: "mod",
+        failed: 1,
+        passed: 0,
+        runtime: 5,
+        skipped: false,
+      };
+      const moduleDoneData = {
+        name: "mod",
+        failed: 1,
+        passed: 0,
+        runtime: 5,
+        tests: [{ testId: "t3", name: "failing test" }],
+      };
 
       cbs.log(assertionData);
       cbs.testDone(testDoneData);
@@ -252,9 +352,32 @@ describe("injectQUnitReport", () => {
       injectQUnitReport(emit);
       assignQUnit(win, qunit);
 
-      const assertionData = { testId: "t4", result: true, message: "ok", source: "", actual: "anything", expected: "anything", todo: false, negative: false };
-      const testDoneData = { testId: "t4", name: "passing test", module: "mod", failed: 0, passed: 1, runtime: 5, skipped: false };
-      const moduleDoneData = { name: "mod", failed: 0, passed: 1, runtime: 5, tests: [{ testId: "t4", name: "passing test" }] };
+      const assertionData = {
+        testId: "t4",
+        result: true,
+        message: "ok",
+        source: "",
+        actual: "anything",
+        expected: "anything",
+        todo: false,
+        negative: false,
+      };
+      const testDoneData = {
+        testId: "t4",
+        name: "passing test",
+        module: "mod",
+        failed: 0,
+        passed: 1,
+        runtime: 5,
+        skipped: false,
+      };
+      const moduleDoneData = {
+        name: "mod",
+        failed: 0,
+        passed: 1,
+        runtime: 5,
+        tests: [{ testId: "t4", name: "passing test" }],
+      };
 
       cbs.log(assertionData);
       cbs.testDone(testDoneData);
@@ -279,10 +402,18 @@ describe("injectQUnitReport", () => {
 
       const qunit = makeQUnit();
       const cbs: Record<string, (...args: unknown[]) => unknown> = {};
-      (qunit.log as ReturnType<typeof vi.fn>).mockImplementation((cb: unknown) => { cbs.log = cb as (...args: unknown[]) => unknown; });
-      (qunit.testDone as ReturnType<typeof vi.fn>).mockImplementation((cb: unknown) => { cbs.testDone = cb as (...args: unknown[]) => unknown; });
-      (qunit.moduleDone as ReturnType<typeof vi.fn>).mockImplementation((cb: unknown) => { cbs.moduleDone = cb as (...args: unknown[]) => unknown; });
-      (qunit.done as ReturnType<typeof vi.fn>).mockImplementation((cb: unknown) => { cbs.done = cb as (...args: unknown[]) => unknown; });
+      (qunit.log as ReturnType<typeof vi.fn>).mockImplementation((cb: unknown) => {
+        cbs.log = cb as (...args: unknown[]) => unknown;
+      });
+      (qunit.testDone as ReturnType<typeof vi.fn>).mockImplementation((cb: unknown) => {
+        cbs.testDone = cb as (...args: unknown[]) => unknown;
+      });
+      (qunit.moduleDone as ReturnType<typeof vi.fn>).mockImplementation((cb: unknown) => {
+        cbs.moduleDone = cb as (...args: unknown[]) => unknown;
+      });
+      (qunit.done as ReturnType<typeof vi.fn>).mockImplementation((cb: unknown) => {
+        cbs.done = cb as (...args: unknown[]) => unknown;
+      });
 
       injectQUnitReport(emit);
       assignQUnit(win, qunit);
