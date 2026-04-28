@@ -8,6 +8,7 @@
     "esModuleInterop": true,
     "isolatedModules": true,
     "resolveJsonModule": true,
+    "rootDir": "src",
     "outDir": "dist",
     "sourceMap": true,
     "declaration": true,
