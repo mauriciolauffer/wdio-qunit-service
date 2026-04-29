@@ -126,6 +126,70 @@ describe("injectQUnitReport", () => {
     expect(emit).not.toHaveBeenCalled();
   });
 
+  it("returns QUnit value via the getter after it has been set", () => {
+    injectQUnitReport(emit);
+    const qunit = makeQUnit();
+    assignQUnit(win, qunit);
+    expect(win.QUnit).toBe(qunit);
+  });
+
+  it("sets aborted message and calls setSuiteReport via setTimeout when buildModules throws", async () => {
+    const qunit = makeQUnit();
+    const cbs: Record<string, (...args: unknown[]) => unknown> = {};
+    (qunit.log as ReturnType<typeof vi.fn>).mockImplementation((cb: unknown) => {
+      cbs.log = cb as (...args: unknown[]) => unknown;
+    });
+    (qunit.testDone as ReturnType<typeof vi.fn>).mockImplementation((cb: unknown) => {
+      cbs.testDone = cb as (...args: unknown[]) => unknown;
+    });
+    (qunit.moduleDone as ReturnType<typeof vi.fn>).mockImplementation((cb: unknown) => {
+      cbs.moduleDone = cb as (...args: unknown[]) => unknown;
+    });
+    (qunit.done as ReturnType<typeof vi.fn>).mockImplementation((cb: unknown) => {
+      cbs.done = cb as (...args: unknown[]) => unknown;
+    });
+
+    injectQUnitReport(emit);
+    assignQUnit(win, qunit);
+
+    // Corrupt collect.modules to be non-iterable so buildModules throws,
+    // while keeping collect.tests valid so setSuiteReport (called in setTimeout) still works.
+    (win._wdioQunitService.collect as unknown as Record<string, unknown>).modules = null;
+
+    vi.useFakeTimers();
+    expect(() => cbs.done({})).toThrow();
+    expect(win._wdioQunitService.suiteReport.aborted).toMatch(/error occured/);
+    vi.runAllTimers();
+    expect(win._wdioQunitService.suiteReport.completed).toBe(true);
+    vi.useRealTimers();
+  });
+
+  it("assigns window._wdioQunitService to parent when parent has no existing reporter", () => {
+    const parent = {} as { _wdioQunitService?: WdioQunitService.Reporter };
+    win.parent = parent;
+
+    const qunit = makeQUnit();
+    const cbs: Record<string, (...args: unknown[]) => unknown> = {};
+    (qunit.log as ReturnType<typeof vi.fn>).mockImplementation((cb: unknown) => {
+      cbs.log = cb as (...args: unknown[]) => unknown;
+    });
+    (qunit.testDone as ReturnType<typeof vi.fn>).mockImplementation((cb: unknown) => {
+      cbs.testDone = cb as (...args: unknown[]) => unknown;
+    });
+    (qunit.moduleDone as ReturnType<typeof vi.fn>).mockImplementation((cb: unknown) => {
+      cbs.moduleDone = cb as (...args: unknown[]) => unknown;
+    });
+    (qunit.done as ReturnType<typeof vi.fn>).mockImplementation((cb: unknown) => {
+      cbs.done = cb as (...args: unknown[]) => unknown;
+    });
+
+    injectQUnitReport(emit);
+    assignQUnit(win, qunit);
+    cbs.done({});
+
+    expect(parent._wdioQunitService).toBe(win._wdioQunitService);
+  });
+
   it("registers QUnit.log, testDone, moduleDone, and done callbacks", () => {
     const qunit = makeQUnit();
     injectQUnitReport(emit);

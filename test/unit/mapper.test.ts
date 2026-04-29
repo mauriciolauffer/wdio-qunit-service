@@ -161,6 +161,15 @@ describe("generateTestCases", () => {
     expect(names).toContain("...");
   });
 
+  it("executes the body of the it.skip callback for skipped tests", () => {
+    const skipBodyMock = vi.fn((_name: string, fn?: () => void) => fn?.());
+    itMock.skip = skipBodyMock;
+    const test = makeTest({ skipped: true, name: "skipped with body" });
+    const suite = makeSuiteReport({ childSuites: [makeChildSuite({ tests: [test] })] });
+    generateTestCases(suite);
+    expect(skipBodyMock).toHaveBeenCalledWith("skipped with body", expect.any(Function));
+  });
+
   it("calls expect for a failed assertion with negative flag", async () => {
     const assertion = makeAssertion({ success: false, negative: true, actual: "a", expected: "b" });
     const test = makeTest({ assertions: [assertion] });

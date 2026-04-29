@@ -246,6 +246,107 @@ describe("QUnitService", () => {
       expect(waitUntil).toHaveBeenCalled();
       expect(results).toEqual([suiteReport]);
     });
+
+    it("waitUntil predicate returns true when all results are completed", async () => {
+      const addCommand = vi.fn();
+      const on = vi.fn();
+      const addInitScript = vi.fn().mockResolvedValue({ on });
+
+      let executeFn: (() => boolean) | undefined;
+      let callCount = 0;
+      const execute = vi.fn((fn: () => boolean) => {
+        if (callCount === 0) {
+          executeFn = fn;
+          callCount++;
+          return Promise.resolve(true);
+        }
+        callCount++;
+        return Promise.resolve([]);
+      });
+      const waitUntil = vi.fn(async (fn: () => Promise<unknown>) => {
+        await fn();
+      });
+
+      const browserInstance = {
+        addCommand,
+        addInitScript,
+        waitUntil,
+        execute,
+      } as unknown as WebdriverIO.Browser;
+      (globalThis as unknown as { browser: unknown }).browser = browserInstance;
+
+      const service = new QUnitService();
+      await service.before(
+        {} as unknown as import("@wdio/types").Capabilities.RequestedMultiremoteCapabilities,
+        [],
+        browserInstance,
+      );
+
+      const registeredFn = (
+        addCommand.mock.calls[0] as [string, () => Promise<WdioQunitService.SuiteReport[]>]
+      )[1];
+      await registeredFn.call(browserInstance);
+
+      // Call the captured execute lambda in a window context with completed results
+      expect(executeFn).toBeDefined();
+      const prevWindow = (globalThis as unknown as Record<string, unknown>).window;
+      (globalThis as unknown as Record<string, unknown>).window = {
+        _wdioQunitService: { results: [{ completed: true }, { completed: true }] },
+      };
+      const result = executeFn!();
+      (globalThis as unknown as Record<string, unknown>).window = prevWindow;
+      expect(result).toBe(true);
+    });
+
+    it("waitUntil predicate returns false when some results are not completed", async () => {
+      const addCommand = vi.fn();
+      const on = vi.fn();
+      const addInitScript = vi.fn().mockResolvedValue({ on });
+
+      let executeFn: (() => boolean) | undefined;
+      let callCount = 0;
+      const execute = vi.fn((fn: () => boolean) => {
+        if (callCount === 0) {
+          executeFn = fn;
+          callCount++;
+          return Promise.resolve(true);
+        }
+        callCount++;
+        return Promise.resolve([]);
+      });
+      const waitUntil = vi.fn(async (fn: () => Promise<unknown>) => {
+        await fn();
+      });
+
+      const browserInstance = {
+        addCommand,
+        addInitScript,
+        waitUntil,
+        execute,
+      } as unknown as WebdriverIO.Browser;
+      (globalThis as unknown as { browser: unknown }).browser = browserInstance;
+
+      const service = new QUnitService();
+      await service.before(
+        {} as unknown as import("@wdio/types").Capabilities.RequestedMultiremoteCapabilities,
+        [],
+        browserInstance,
+      );
+
+      const registeredFn = (
+        addCommand.mock.calls[0] as [string, () => Promise<WdioQunitService.SuiteReport[]>]
+      )[1];
+      await registeredFn.call(browserInstance);
+
+      expect(executeFn).toBeDefined();
+      const prevWindow2 = (globalThis as unknown as Record<string, unknown>).window;
+      (globalThis as unknown as Record<string, unknown>).window = {
+        _wdioQunitService: { results: [{ completed: true }, { completed: false }] },
+      };
+      const result = executeFn!();
+      (globalThis as unknown as Record<string, unknown>).window = prevWindow2;
+      expect(result).toBe(false);
+    });
   });
 });
 
