@@ -83,7 +83,7 @@ export default class QUnitService implements Services.ServiceInstance {
   ): Promise<void> {
     log.debug("Executing before hook...");
     browserInstance.addCommand("getQUnitResults", getQUnitResults.bind(browserInstance));
-    const script = await browser.addInitScript(injectQUnitReport);
+    const script = await browserInstance.addInitScript(injectQUnitReport);
     script.on("data", (href: string) => {
       log.warn("QUnit reporter injected at", href);
     });
