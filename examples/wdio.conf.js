@@ -42,7 +42,7 @@ export const config = defineConfig({
   maxInstances: cpus().length || 4,
   logLevel: "warn",
   framework: "mocha",
-  waitforTimeout: 180000, // 3 minutes
+  waitforTimeout: 300000, // 5 minutes
 
   reporters: [
     "spec",

@@ -170,7 +170,7 @@ describe("generateTestCases", () => {
     expect(skipBodyMock).toHaveBeenCalledWith("skipped with body", expect.any(Function));
   });
 
-  it("calls expect for a failed assertion with negative flag", async () => {
+  it("calls expect for a failed assertion with negative flag", () => {
     const assertion = makeAssertion({ success: false, negative: true, actual: "a", expected: "b" });
     const test = makeTest({ assertions: [assertion] });
     const suite = makeSuiteReport({ childSuites: [makeChildSuite({ tests: [test] })] });
@@ -178,7 +178,7 @@ describe("generateTestCases", () => {
     expect(expectMock).toHaveBeenCalled();
   });
 
-  it("calls expect for a failed assertion without negative flag", async () => {
+  it("calls expect for a failed assertion without negative flag", () => {
     const assertion = makeAssertion({
       success: false,
       negative: false,

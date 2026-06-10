@@ -17,7 +17,6 @@ export default defineConfig({
         "**/dist/**",
         "**/tests/**",
         "**/*.test.ts",
-        "src/lib/auth.ts",
         "src/types/**",
         "src/default.test.ts",
       ],

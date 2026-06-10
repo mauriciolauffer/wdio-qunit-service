@@ -11,7 +11,6 @@ const expectMock = vi.fn(() => ({ toEqual: vi.fn(), toBeUndefined: vi.fn() }));
 (globalThis as unknown as Record<string, unknown>).describe = describeMock;
 (globalThis as unknown as Record<string, unknown>).it = itMock;
 (globalThis as unknown as Record<string, unknown>).expect = expectMock;
-import type WdioQunitService from "../../src/types/wdio.js";
 
 vi.mock("@wdio/logger", () => ({
   default: () => ({ debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() }),
@@ -364,7 +363,7 @@ describe("CustomLauncher", () => {
       launcher.onPrepare(config);
 
       expect(specs).toHaveLength(1);
-      expect(specs[0]).toMatch(/default\.test\.js$/);
+      expect(specs[0]).toMatch(/default\.test\.js$/u);
     });
 
     it("does not modify specs when no paths are configured", () => {

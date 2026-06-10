@@ -133,7 +133,7 @@ describe("injectQUnitReport", () => {
     expect(win.QUnit).toBe(qunit);
   });
 
-  it("sets aborted message and calls setSuiteReport via setTimeout when buildModules throws", async () => {
+  it("sets aborted message and calls setSuiteReport via setTimeout when buildModules throws", () => {
     const qunit = makeQUnit();
     const cbs: Record<string, (...args: unknown[]) => unknown> = {};
     (qunit.log as ReturnType<typeof vi.fn>).mockImplementation((cb: unknown) => {
@@ -157,8 +157,8 @@ describe("injectQUnitReport", () => {
     (win._wdioQunitService.collect as unknown as Record<string, unknown>).modules = null;
 
     vi.useFakeTimers();
-    expect(() => cbs.done({})).toThrow();
-    expect(win._wdioQunitService.suiteReport.aborted).toMatch(/error occured/);
+    expect(() => cbs.done({})).toThrow(Error);
+    expect(win._wdioQunitService.suiteReport.aborted).toMatch(/error occured/u);
     vi.runAllTimers();
     expect(win._wdioQunitService.suiteReport.completed).toBe(true);
     vi.useRealTimers();

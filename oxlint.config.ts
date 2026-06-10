@@ -15,6 +15,7 @@ export default defineConfig({
     "max-classes-per-file": "off",
     "no-new": "off",
     "max-lines-per-function": "off",
+    "max-lines": "off",
     "no-shadow": "off",
     "jest/no-conditional-in-test": "off",
   },
