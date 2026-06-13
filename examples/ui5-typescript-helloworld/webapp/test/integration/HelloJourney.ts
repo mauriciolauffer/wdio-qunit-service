@@ -39,9 +39,7 @@ opaTest("Should close the Hello dialog", function () {
   });
 
   // Actions
-  onTheAppPage
-    .iPressTheSayHelloWithDialogButton()
-    .and.iPressTheOkButtonInTheDialog();
+  onTheAppPage.iPressTheSayHelloWithDialogButton().and.iPressTheOkButtonInTheDialog();
 
   // Assertions
   onTheAppPage.iShouldNotSeeTheHelloDialog();

@@ -10,9 +10,7 @@ export default class App extends Controller {
     // apply content density mode to root view
     const view = this.getView();
     if (view) {
-      view.addStyleClass(
-        (this.getOwnerComponent() as AppComponent).getContentDensityClass(),
-      );
+      view.addStyleClass((this.getOwnerComponent() as AppComponent).getContentDensityClass());
     }
   }
 

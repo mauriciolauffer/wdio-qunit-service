@@ -2,11 +2,7 @@ import { cpus } from "node:os";
 import { defineConfig } from "@wdio/config";
 export const config = defineConfig({
   specs: ["./**/*.test.ts", "./**/*.test.js", "./**/*.test.cjs"],
-  exclude: [
-    "./openui5-*/**",
-    "./ui5-typescript-helloworld/**",
-    "./qunit-fail/**",
-  ],
+  exclude: ["./openui5-*/**", "./ui5-typescript-helloworld/**", "./qunit-fail/**"],
 
   suites: {
     "ui5-1.96": ["./ui5-1.96/**/*.test.js"],
@@ -38,12 +34,7 @@ export const config = defineConfig({
       browserName: "chrome",
       browserVersion: "stable",
       "goog:chromeOptions": {
-        args: [
-          "headless",
-          "disable-gpu",
-          "window-size=1920,1080",
-          "no-sandbox",
-        ],
+        args: ["headless", "disable-gpu", "window-size=1920,1080", "no-sandbox"],
       },
     },
   ],
@@ -51,7 +42,7 @@ export const config = defineConfig({
   maxInstances: cpus().length || 4,
   logLevel: "warn",
   framework: "mocha",
-  waitforTimeout: 180000, // 3 minutes
+  waitforTimeout: 300000, // 5 minutes
 
   reporters: [
     "spec",

@@ -10,8 +10,7 @@ export default class AppPage extends Opa5 {
       id: "helloButton",
       viewName,
       actions: new Press(),
-      errorMessage:
-        "Did not find the 'Say Hello With Dialog' button on the App view",
+      errorMessage: "Did not find the 'Say Hello With Dialog' button on the App view",
     });
   }
 

@@ -98,8 +98,7 @@ export function injectQUnitReport(emit: (result: string) => void) {
     suiteReport.runtime =
       suiteReport.childSuites.reduce((acc, obj) => acc + obj.runtime, 0) +
       suiteReport.tests.reduce((acc, obj) => acc + obj.runtime, 0);
-    suiteReport.success =
-      collectedTests.filter((test) => test.failed > 0).length === 0;
+    suiteReport.success = collectedTests.filter((test) => test.failed > 0).length === 0;
     suiteReport.completed = true;
     window._wdioQunitService.results = [suiteReport];
     setQunitReportParentWindow();
@@ -130,14 +129,10 @@ export function injectQUnitReport(emit: (result: string) => void) {
   /**
    * Build tests for WDIO QUnit Reporter
    */
-  function buildTests(
-    qModuleTests: WdioQunitService.TestReport[],
-  ): WdioQunitService.TestReport[] {
+  function buildTests(qModuleTests: WdioQunitService.TestReport[]): WdioQunitService.TestReport[] {
     const collectedTests = [...window._wdioQunitService.collect.tests];
     return qModuleTests.map((qTest) => {
-      const testDone = collectedTests.find(
-        (testDone) => qTest.testId === testDone.testId,
-      );
+      const testDone = collectedTests.find((testDone) => qTest.testId === testDone.testId);
       const assertions = buildAssertions(qTest);
       return {
         name: qTest.name,
@@ -154,12 +149,8 @@ export function injectQUnitReport(emit: (result: string) => void) {
   /**
    * Build assertions for WDIO QUnit Reporter
    */
-  function buildAssertions(
-    qTest: WdioQunitService.TestReport,
-  ): WdioQunitService.AssertionReport[] {
-    const collectedAssertions = [
-      ...window._wdioQunitService.collect.assertions,
-    ];
+  function buildAssertions(qTest: WdioQunitService.TestReport): WdioQunitService.AssertionReport[] {
+    const collectedAssertions = [...window._wdioQunitService.collect.assertions];
     return collectedAssertions
       .filter((assertionDone) => qTest.testId === assertionDone.testId)
       .map((assertionDone) => {

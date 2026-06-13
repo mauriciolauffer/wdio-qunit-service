@@ -2,8 +2,12 @@
   "name": "ui5-typescript-helloworld",
   "version": "1.0.0",
   "description": "Showcase of a TypeScript setup for developing UI5 applications",
-  "author": "SAP SE",
   "license": "Apache-2.0",
+  "author": "SAP SE",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SAP-samples/ui5-typescript-helloworld.git"
+  },
   "scripts": {
     "build": "ui5 build --clean-dest",
     "build:opt": "ui5 build self-contained --clean-dest --all",
@@ -12,10 +16,6 @@
     "start:dist": "ui5 serve  --port 8080 -o index.html --config ui5-dist.yaml",
     "ts-typecheck": "tsc --noEmit",
     "test": "wdio run ./webapp/test/wdio.conf.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/SAP-samples/ui5-typescript-helloworld.git"
   },
   "devDependencies": {
     "@types/openui5": "1.136.0",
