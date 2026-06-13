@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.2](https://github.com/mauriciolauffer/wdio-qunit-service/compare/v2.0.1...v2.0.2) (2026-06-13)
+
+
+### Bug Fixes
+
+* no global browser ([#53](https://github.com/mauriciolauffer/wdio-qunit-service/issues/53)) ([4b47e33](https://github.com/mauriciolauffer/wdio-qunit-service/commit/4b47e332e1aeb21f8e3ce6fd03cb654d72d0b408))
+
 ## [2.0.1](https://github.com/mauriciolauffer/wdio-qunit-service/compare/v2.0.0...v2.0.1) (2025-09-08)
 
 
